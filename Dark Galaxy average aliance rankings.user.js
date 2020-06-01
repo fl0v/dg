@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Dark Galaxy average aliance rankings
+// @name         Dark Galaxy Alliance average rankings
 // @namespace    http://darkgalaxy.com/
 // @version      0.1
 // @description  All your planet are belong to us
