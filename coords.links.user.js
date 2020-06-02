@@ -26,8 +26,8 @@
     }
 
     let items = {};
-    if (location.href.endsWith('/planet/')) {    // Single planet page
-        items = $('#planetHeader .coords');
+    if (location.href.match(/planet\/[0-9]+/)) {    // Single planet page
+        items = $('#planetHeader .coords, .coords > span'); // top planet coords + planet comms
     } else { // Planets list (#planetList .coords > span), PLanet comms page (#radarList .entry .coords > span)
         items = $('.coords > span');        
     }
