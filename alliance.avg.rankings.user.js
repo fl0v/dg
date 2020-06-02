@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         DarkGalaxy - Alliance average rankings
+// @name         Dark Galaxy - Alliance average rankings
 // @namespace    https://darkgalaxy.com/
 // @version      0.1
 // @description  All your planet are belong to us
@@ -7,6 +7,7 @@
 // @match        https://beta.darkgalaxy.com/rankings/alliances/
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.5.1.slim.min.js
+// @todo         Must drop jquery requirement
 // ==/UserScript==
 
 (function() {

@@ -2,7 +2,7 @@
 // @name         Dark Galaxy - Planets stats
 // @namespace    https://darkgalaxy.com/
 // @version      0.1
-// @description  Try to take over the galaxy!
+// @description  All your planet are belong to us
 // @author       [2P]DraghasYesterday & Biggy
 // @match        https://beta.darkgalaxy.com/planets/
 // @grant        none
