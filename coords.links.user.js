@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Navigation link on any set of coords (except 0.0.0)
 // @namespace    https://darkgalaxy.com/
-// @version      0.4
+// @version      0.5
 // @description  Try to take over the galaxy!
 // @author       Bean & Biggy
 // @match        https://beta.darkgalaxy.com/planets/
