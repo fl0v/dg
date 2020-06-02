@@ -46,7 +46,7 @@
             + '<img src="/images/units/small/'+code+'.gif" title="'+code+'">'
             + '</div>'
             + '<span>'
-            + formatNumber(total.collected) +' (+'+formatNumber(total.production)+') avg percentage '+ formatNumber(total.perc)+'%'
+            + formatNumber(total.collected) +' (+'+formatNumber(total.production)+') AVG '+ formatNumber(total.perc)+'%'
             + '</span>'
         ;
     };
@@ -59,7 +59,7 @@
     const container = document.querySelector('#planetList');
     container.insertAdjacentHTML('afterbegin',
         '<div class="opacDarkBackground lightBorder seperator planetStats">'
-            +'<div class="header border">Planets Statistics</div>'
+            +'<div class="header border">Total resources</div>'
             +'<div class="resource metal">'+formatResource(metal,'metal')+'</div>'
             +'<div class="resource mineral">'+formatResource(mineral,'mineral')+'</div>'
             +'<div class="resource energy">'+formatResource(energy,'energy')+'</div>'
