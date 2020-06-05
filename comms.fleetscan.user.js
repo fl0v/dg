@@ -18,10 +18,11 @@
     let fleets = {
         owned: {
             name: '',
-            fleet: {}
+            fleet: {},
+            cnt: 0
         },
         alliances: {
-            // allianceid: { name:'',allied:1,fleet:{....}}
+            // allianceid: { name:'',allied:1,fleet:{....},cnt:0}
         },
     }
     const addFleet = (playerName, allianceId, allianceName, flName, flCount, allied, owned) => {
@@ -29,10 +30,12 @@
             fleets.owned.name = playerName;
             fleets.owned.fleet[flName] = fleets.owned.fleet[flName] || 0; // init ruller
             fleets.owned.fleet[flName] += flCount;
+            fleets.owned.cnt += flCount;
         }
-        fleets.alliances[allianceId] = fleets.alliances[allianceId] || {name:allianceName,allied:allied,fleet:{}}; // init alliance
+        fleets.alliances[allianceId] = fleets.alliances[allianceId] || {name:allianceName,allied:allied,fleet:{},cnt:0}; // init alliance
         fleets.alliances[allianceId].fleet[flName] = fleets.alliances[allianceId].fleet[flName] || 0; // init ship type
         fleets.alliances[allianceId].fleet[flName] += flCount;
+        fleets.alliances[allianceId].cnt += flCount;
     }
 
     /**
@@ -90,7 +93,7 @@
         + '<div class="lightBorder ofHidden opacDarkBackground fleetscanTotals">'
             +'<div class="header border">Fleet Scan Totals</div>'
             + '<div class="d-flex">'
-            + allianceTemplate('friendly',fleets.owned.name,fleets.owned.fleet);
+            + (fleets.owned.cnt > 0 ? allianceTemplate('friendly',fleets.owned.name,fleets.owned.fleet) : '');
     Object.entries(fleets.alliances).forEach((a) => {
         if (a[1].allied) {
             template += allianceTemplate(a[1].allied ? 'allied' : 'hostile',a[1].name,a[1].fleet);
