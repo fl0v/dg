@@ -14,6 +14,7 @@
 - **[planets.stats.user.js](https://github.com/fl0v/dg/raw/master/planets.stats.user.js)** Adds some totals for your resources in the planet list page (https://beta.darkgalaxy.com/planets/). You can also copy that info in a clean text format.
 - **[planets.total.workers.user.js](https://github.com/fl0v/dg/raw/master/planets.total.workers.user.js)** Adds info about total workers for each planet (sum of iddle and occupied workers). It does not alter the numbers already in page so it should not conflict with other tools.
 - **[menu.useful.links.user.js](https://github.com/fl0v/dg/raw/master/menu.useful.links.user.js)** Adds custom links to the header of every page.
+- **[comms.fleetscan.user.js](https://github.com/fl0v/dg/raw/master/comms.fleetscan.user.js)** Fleet Scan Totals for owned, allied and hostile
 
 ## TODO
 - remove jquery references
