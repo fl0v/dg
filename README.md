@@ -16,6 +16,9 @@
 - **[menu.useful.links.user.js](https://github.com/fl0v/dg/raw/master/menu.useful.links.user.js)** Adds custom links to the header of every page.
 - **[comms.fleetscan.user.js](https://github.com/fl0v/dg/raw/master/comms.fleetscan.user.js)** Fleet Scan Totals for owned, allied and hostile
 
+## Want to help ?
+Checkout the [workflow tutorial](workflow.md)
+
 ## TODO
 - remove jquery references
 - Script: Radar stats by planet/ruller/alliance
