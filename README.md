@@ -15,12 +15,14 @@
 - **[planets.total.workers.user.js](https://github.com/fl0v/dg/raw/master/planets.total.workers.user.js)** Adds info about total workers for each planet (sum of iddle and occupied workers). It does not alter the numbers already in page so it should not conflict with other tools.
 - **[menu.useful.links.user.js](https://github.com/fl0v/dg/raw/master/menu.useful.links.user.js)** Adds custom links to the header of every page.
 - **[comms.fleetscan.user.js](https://github.com/fl0v/dg/raw/master/comms.fleetscan.user.js)** Fleet Scan Totals for owned, allied and hostile
+- **[comms.radar.user.js](https://github.com/fl0v/dg/raw/master/comms.radar.user.js)** Some radar page enhancements (quick search & quick shortcuts)
 
 ## Want to help ?
 Checkout the [workflow tutorial](workflow.md)
 
 ## TODO
 - remove jquery references
+- comms.radar.user.js: filter fleets by score, player, alliance, aggressors, own attacks, only hostiles
 - Script: Radar stats by planet/ruller/alliance
 - Script: Save alerts to google calendar for fleet arrival, building done, or any custom tick.
 - Script: Save post-it notes in any page, attached to a planet or a fleet.
