@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleetscan totals
 // @namespace    https://darkgalaxy.com/
-// @version      0.2
+// @version      0.3
 // @description  The enemy is at the gates!
 // @author       Biggy
 // @match        https://beta.darkgalaxy.com/news/view/*/
@@ -178,11 +178,9 @@
 
     let template = '<div class="lightBorder ofHidden opacDarkBackground fleetscanTotals">';
     template += scanRowTemplate('Fleet Scan Total',fleets);
-    if (fleets.eta[0]) { // eta 0 = in orbit
-        template += scanRowTemplate('Fleets on orbit',fleets.eta[0]);
-    }
-    Object.entries(fleets.eta).forEach((a) => {
-        template += scanRowTemplate('ETA '+a[0],a[1]);
+    Object.entries(fleets.eta).forEach((a) => { // do i nead to sort etas first ? dont think so. i think they are always in incremental order in fleetscan
+        const title = a[0] == 0 ? 'Fleets on orbit' : 'ETA '+a[0];
+        template += scanRowTemplate(title,a[1]);
     });
     template += '</div>';
 
