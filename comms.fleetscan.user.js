@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleetscan totals
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @description  The enemy is at the gates!
 // @author       Biggy
 // @match        https://beta.darkgalaxy.com/news/view/*/
@@ -11,7 +11,7 @@
 
 (function() {
 
-    const etaPattern = /Arriving\sin\s([\d]+)\sturns/;
+    const etaPattern = /Arriving\sin\s([\d]+)\sturn/;
     const parseValue = (v) => parseInt(String(v).replace(/[,\+%]+/g, '')); // will normalize a value to be able to use it in Math operation '52,126' -> 52126; '+3,465' -> 3465; '70%' -> 70
     const formatNumber = (v) => String(v).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'); // same format as the rest of the values in ui
     const shipsOrder = ['Fighter', 'Bomber', 'Frigate', 'Cruiser', 'Holo Projector', 'Invasion Ship', 'Freighter']; // what ar the other names ? :)
