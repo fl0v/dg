@@ -96,24 +96,30 @@
         producing: {}
     };
 
-    Array.from(document.querySelectorAll(activitySelector)).forEach((el) => {
-        //console.log('el',el,el.href,el.innerText);
+    Array.from(document.querySelectorAll(activitySelector)).forEach((el) => {        
         const msg = el.parentNode.innerText;
+        
+        // Training first
         if (trainPattern.test(el.href) && trainMsgPattern.test(msg)) {
             const [,cnt,unit,ttf] = msg.match(trainMsgPattern);
             activity.training[unit] = (activity.training[unit] || 0) + parseValue(cnt);
 
+        // SY Production
         } else if (prodPattern.test(el.href) && prodMsgPattern.test(msg)) {
             const [,cnt,unit,ttf] = msg.match(prodMsgPattern);
             activity.producing[unit] = (activity.producing[unit] || 0) + parseValue(cnt);
 
+        // Buildings
         } else if (buildPattern.test(el.href) && buildMsgPattern.test(msg)) {
-            const [,unit,ttf] = msg.match(/Building:\s(.*)\s\(([\d]+)/);
+            const [,unit,ttf] = msg.match(buildMsgPattern);
             activity.building[unit] = activity.building[unit] || 0;
             activity.building[unit]++;
         }
     });
 
+    /**
+     * Produce summary with html if cls is provided, otherwise simple text for copy paste
+     */
     const activitySummary = (label,collection,cls) => {
         let msgs = Object.entries(collection).reduce((carry, a) => {
             carry.push(cls ? '<span class="activity-item"><b>'+a[1]+'</b>x '+a[0]+'</span>' : a[1] + 'x '+a[0]);
