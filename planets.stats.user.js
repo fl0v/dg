@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Dark Galaxy - Planets stats
 // @namespace    https://darkgalaxy.com/
-// @version      0.4
+// @version      0.5
 // @description  All your planet are belong to us
-// @author       [2P]DraghasYesterday & Biggy
+// @author       Biggy
 // @match        https://beta.darkgalaxy.com/planets/
 // @grant        none
 // ==/UserScript==
@@ -52,7 +52,7 @@
         }
         return total;
     };
-    
+
     const formatResource = (total, code) => {
         if (code == 'worker') {
             return formatNumber(total.stored) +' / AVG: '+formatNumber(total.avg);
@@ -63,7 +63,7 @@
         }
     };
 
-    const resourceTemplate = (total,code) => {        
+    const resourceTemplate = (total,code) => {
         return '<div class="left seperatorRight">'
             + '<img src="/images/units/small/'+code+'.gif" title="'+code+'">'
             + '</div>'
@@ -80,8 +80,55 @@
     const orbit = resTotal('.resource.orbit');
     //const food = resTotal('.resource.food'); // i miss food :((
 
-    const container = document.querySelector('#planetList');
-    container.insertAdjacentHTML('afterbegin',
+    /**
+     * Lets build a summary of all activity
+     */
+    const activitySelector = '#planetList .planetHeadSection .left.resource a';
+    const buildPattern = /\/planet\/([\d]+)\/$/;
+    const prodPattern = /\/planet\/([\d]+)\/production\/$/;
+    const trainPattern = /\/planet\/([\d]+)\/training\/$/;
+    const buildMsgPattern = /Building:\s(.*)\s\(([\d]+)/;
+    const prodMsgPattern = /Ship\sYard:\s([\d,]+)x\s(.*)\s\(([\d]+)/;
+    const trainMsgPattern = /Barracks:\s([\d,]+)x\s(.*)\s\(([\d]+)/;
+    let activity = {
+        building: {},
+        training: {},
+        producing: {}
+    };
+
+    Array.from(document.querySelectorAll(activitySelector)).forEach((el) => {
+        //console.log('el',el,el.href,el.innerText);
+        const msg = el.parentNode.innerText;
+        if (trainPattern.test(el.href) && trainMsgPattern.test(msg)) {
+            const [,cnt,unit,ttf] = msg.match(trainMsgPattern);
+            activity.training[unit] = (activity.training[unit] || 0) + parseValue(cnt);
+
+        } else if (prodPattern.test(el.href) && prodMsgPattern.test(msg)) {
+            const [,cnt,unit,ttf] = msg.match(prodMsgPattern);
+            activity.producing[unit] = (activity.producing[unit] || 0) + parseValue(cnt);
+
+        } else if (buildPattern.test(el.href) && buildMsgPattern.test(msg)) {
+            const [,unit,ttf] = msg.match(/Building:\s(.*)\s\(([\d]+)/);
+            activity.building[unit] = activity.building[unit] || 0;
+            activity.building[unit]++;
+        }
+    });
+
+    const activitySummary = (label,collection,cls) => {
+        let msgs = Object.entries(collection).reduce((carry, a) => {
+            carry.push(cls ? '<span class="activity-item"><b>'+a[1]+'</b>x '+a[0]+'</span>' : a[1] + 'x '+a[0]);
+            return carry;
+        },[]);
+        if (msgs.length) {
+            return cls ? '<div class="'+cls+'">'+label+' '+msgs.join(', ')+'</div>' : label+' '+msgs.join(', ');
+        }
+        return '';
+    };
+
+    /**
+     * add a nice top panel for the planet list
+     */
+    document.querySelector('#planetList').insertAdjacentHTML('afterbegin',
         '<div class="opacDarkBackground lightBorder ofHidden seperator planetStats">'
             +'<span class="right copy-hint">Click to copy to clipboard</span>'
             +'<div class="header border">Total resources ('+metal.count+' planets)</div>'
@@ -90,13 +137,19 @@
                 +'<div class="resource mineral">'+resourceTemplate(mineral,'mineral')+'</div>'
                 +'<div class="resource energy">'+resourceTemplate(energy,'energy')+'</div>'
             +'</div>'
-            +'<div class="right d-flex">'
-                +'<div class="resource population">'+resourceTemplate(pop,'worker')+'</div>'
-                +'<div class="resource solider">'+resourceTemplate(sold,'soldier')+'</div>'
-                +'<div class="resource ground">'+resourceTemplate(ground,'ground')+'</div>'
-                +'<div class="resource orbit">'+resourceTemplate(orbit,'orbit')+'</div>'
+            +'<div class="right">'
+                + '<div class="d-flex d-flex-jce">'
+                    + '<div class="resource population">'+resourceTemplate(pop,'worker')+'</div>'
+                    + '<div class="resource solider">'+resourceTemplate(sold,'soldier')+'</div>'
+                    + '<div class="resource ground">'+resourceTemplate(ground,'ground')+'</div>'
+                    + '<div class="resource orbit">'+resourceTemplate(orbit,'orbit')+'</div>'
+                + '</div>'
+                + '<div class="activity d-flex d-flex-column">'
+                    + activitySummary('Building:',activity.building,'activity-building')
+                    + activitySummary('Producing:',activity.producing,'activity-producing')
+                    + activitySummary('Training:',activity.training,'activity-training')
+                +'</div>'
             +'</div>'
-
         +'</div>'
     );
 
@@ -105,7 +158,16 @@
      */
     const style = document.createElement('style');
           style.type = 'text/css';
-          style.innerHTML = '.planetStats .copy-hint { padding:5px; line-height:20px;} .planetStats .resource { height:auto; } .d-flex { display:flex; white-space: nowrap; } .d-flex-grow { flex-grow:1; } .d-flex-wrap { flex-wrap:wrap; }';
+          style.innerHTML = ''
+              + ' .planetStats .copy-hint { padding:5px; line-height:20px;}'
+              + ' .planetStats .resource { height:auto; }'
+              + ' .planetStats .activity { text-align:right; padding-right:5px; font-size:12px; line-height:18px; font-weight:normal; }'
+              + ' .d-flex { display:flex; white-space: nowrap; }'
+              + ' .d-flex-grow { flex-grow:1; }'
+              + ' .d-flex-wrap { flex-wrap:wrap; }'
+              + ' .d-flex-jce { justify-content: flex-end; }'
+              + ' .d-flex-column { flex-direction: column; }'
+     ;
     document.getElementsByTagName('head')[0].appendChild(style);
 
 
@@ -140,7 +202,11 @@
         c+= pe(" Soldiers:",pl) + formatResource(sold,'soldier')  + "\n";
         c+= pe(" Ground:",pl)   + formatResource(ground,'ground') + "\n";
         c+= pe(" Orbit:",pl)    + formatResource(ground,'orbit')  + "\n";
-        c+= txtBorder+"\n";
+        c+= txtSpacer;
+        c+= activitySummary("\n Building:",activity.building);
+        c+= activitySummary("\n Producing:",activity.producing);
+        c+= activitySummary("\n Training:",activity.training);
+        c+= "\n"+txtBorder+"\n";
         return c;
     };
 })();
