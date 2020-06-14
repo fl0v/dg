@@ -1,20 +1,27 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleetscan totals
 // @namespace    https://darkgalaxy.com/
-// @version      0.4
+// @version      0.5
 // @description  The enemy is at the gates!
 // @author       Biggy
-// @match        https://beta.darkgalaxy.com/news/view/*/
-// @match        https://beta.darkgalaxy.com/planet/*/comms/
+// @source       https://github.com/fl0v/dg
+// @supportURL   https://github.com/fl0v/dg/issues
+// @downloadURL  https://github.com/fl0v/dg/raw/master/comms.fleetscan.user.js
+// @match        https://*.darkgalaxy.com/news/view/*/
+// @match        https://*.darkgalaxy.com/planet/*/comms/
 // @grant        none
 // ==/UserScript==
 
 (function() {
 
+    /*
+     * @todo Add fleet scores
+     */
+
     const etaPattern = /Arriving\sin\s([\d]+)\sturn/;
     const parseValue = (v) => parseInt(String(v).replace(/[,\+%]+/g, '')); // will normalize a value to be able to use it in Math operation '52,126' -> 52126; '+3,465' -> 3465; '70%' -> 70
     const formatNumber = (v) => String(v).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'); // same format as the rest of the values in ui
-    const shipsOrder = ['Fighter', 'Bomber', 'Frigate', 'Cruiser', 'Holo Projector', 'Invasion Ship', 'Freighter']; // what ar the other names ? :)
+    const shipsOrder = ['Fighter', 'Bomber', 'Frigate', 'Destroyer', 'Cruiser', 'Battleship', 'Trader', 'Freighter', 'Invasion Ship'];
     let shipsInScan = []; // ships not added in here will not show up at all
     let forceOwned = false; // if this fleetscan includes owned fleets then we force owned column on each eta row
 
