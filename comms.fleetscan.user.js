@@ -4,7 +4,7 @@
 // @version      0.5
 // @description  The enemy is at the gates!
 // @author       Biggy
-// @source       https://github.com/fl0v/dg
+// @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/comms.fleetscan.user.js
 // @match        https://*.darkgalaxy.com/news/view/*/
