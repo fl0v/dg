@@ -1,14 +1,23 @@
 // ==UserScript==
-// @name         Dark Galaxy - Global radar enhancement
+// @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.1
+// @version      0.2
 // @description  My God Its Full Of Stars!
 // @author       Biggy
-// @match        https://beta.darkgalaxy.com/radar/
+// @source       https://github.com/fl0v/dg
+// @supportURL   https://github.com/fl0v/dg/issues
+// @downloadURL  https://github.com/fl0v/dg/raw/master/comms.radar.user.js
+// @match        https://*.darkgalaxy.com/radar/
 // @grant        none
 // ==/UserScript==
 
 (function() {
+    /*
+     * @todo Remove duplicate systems
+     * @todo Warning for incoming hostiles
+     * @todo Change companion layout
+     * @todo Filter by score
+     */
 
     const pattern = /([1-9]+)\.(\d+)\.(\d+)[\s]+(.*)/;
     const radarsSelector = '#planetList .planetHeadSection';
@@ -34,7 +43,6 @@
         }
      });
 
-
     /**
      * Lets build a companion box with shortcuts to each radar
      */
@@ -49,35 +57,76 @@
     container.classList.add("relative-container");
     container.insertAdjacentHTML('afterbegin',companion);
 
-
     /**
-     * Add a quick filter search box
+     * Add a quick filter/search box
      */
+    const buildFilterOption = (label, value) => {
+        return ''
+            + '<label for="id-qf-'+value+'">'
+            + '<input type="radio" name="quickFilter" id="id-qf-' + value + '" value="' + value +'" />'
+                + '<span class="label">'+label+'</span>'
+            + '</label>'
+        ;
+    };
+    const header = document.querySelector('#contentBox > .header');
+    header.classList.add('d-flex');
+    header.insertAdjacentHTML('beforeend',''
+        + '<span id="quick-filter">'
+            + buildFilterOption('All fleets', 'any-any')
+            + buildFilterOption('Only owned','friendly-any')
+            + buildFilterOption('Alliance', 'friendly_allied-any')
+            + buildFilterOption('Alliance attacking', 'friendly_allied-hostile')
+            + buildFilterOption('Hostile', 'hostile-any')
+            + buildFilterOption('Hostile attacking', 'hostile-friendly_allied')
+        + '</span>'
+        + '<span id="quick-search">'
+            +'<input id="input-quick-search" type="text" name="quickSearch" value="" placeholder="Quick search..." />'
+        + '</span>'
+    );
+    const inputSearch = document.querySelector('#input-quick-search');
+    const inputFilterAll = document.querySelector('#id-qf-any-any');
+
+    // quick filter fleets
+    document.querySelector('#quick-filter')
+        .addEventListener('input', (event) => {
+            inputSearch.value = '';
+            const [owner,destination] = event.target.value.split('-');
+            Array.from(document.querySelectorAll(fleetsSelector)).forEach((el) => {
+                const entryOwner = el.querySelector('.owner > *').className;
+                const entryDestination = el.querySelector('.destination .friendly, .destination .allied, .destination .hostile').className;
+                let valid = true;
+                    valid = valid && (owner == 'any' || owner.includes(entryOwner));
+                    valid = valid && (destination == 'any' || destination.includes(entryDestination));
+                if (valid) {
+                    showFleet(el);
+                } else {
+                    hideFleet(el);
+                }
+            });
+        })
+    ;
+
+    // quick search action
     const filterFleets = (search) => {
         Array.from(document.querySelectorAll(fleetsSelector)).forEach((el) => {
             const searchPattern = new RegExp(search, 'gi');
-            if (! el.innerText.match(searchPattern)) {
+            if (!el.innerText.match(searchPattern)) {
                 hideFleet(el);
             } else {
                 showFleet(el);
             }
         });
     };
-    const header = document.querySelector('#contentBox > .header');
-    header.classList.add('d-flex');
-    header.insertAdjacentHTML('beforeend',''
-        + '<span class="quick-search-spacer"></span><span class="quick-search"><input id="input-quick-search" type="text" name="quickSearch" value="" placeholder="Quick search..." /></span>'
-    );
-    const input = document.querySelector('#input-quick-search');
-    input.addEventListener('keydown', (event) => {
+    inputSearch.addEventListener('keydown', (event) => {
             if (event.keyCode == 27) {
                 event.target.value = '';
                 showAllFleets();
             }
     });
-    input.addEventListener('input', (event) => {
+    inputSearch.addEventListener('input', (event) => {
         const search = event.target.value;
         if (String(search).length >= searchMinLength) {
+            inputFilterAll.checked = true;
             filterFleets(search);
         }
     });
@@ -95,8 +144,8 @@
             + ' .radar-companion .planet { display:block; margin:2px; font-size:14px; white-space: nowrap; }'
             + ' .radar-companion .top { display:block; margin-top:5px; font-size:12px; text-align:right; }'
             + ' .relative-container { position:relative; }'
-            + ' .quick-search { display:inline-block; margin-right:15px; }'
-            + ' .quick-search-spacer { display:inline-block; flex-grow:1; }'
+            + ' #quick-search { display:inline-block; margin-right:15px; }'
+            + ' #quick-filter { font-family: Tahoma, sans-serif; font-size:12px; text-shadow:none; text-align:center; flex-grow:1; }'
 
     ;
     document.getElementsByTagName('head')[0].appendChild(style);

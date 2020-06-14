@@ -22,7 +22,6 @@ Checkout the [workflow tutorial](workflow.md)
 
 ## TODO
 - remove jquery references
-- comms.radar.user.js: filter fleets by score, player, alliance, aggressors, own attacks, only hostiles
 - Script: Radar stats by planet/ruller/alliance
 - Script: Save alerts to google calendar for fleet arrival, building done, or any custom tick.
 - Script: Save post-it notes in any page, attached to a planet or a fleet.
