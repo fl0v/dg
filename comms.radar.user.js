@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -13,7 +13,6 @@
 
 (function() {
     /*
-     * @todo Warning for incoming hostiles
      * @todo Change companion layout
      * @todo Filter by score
      */
@@ -74,15 +73,17 @@
      */
     const tplPlanets = planets.reduce((carry, p) => carry + planetShortcut(p),'');
     const container = document.querySelector('#contentBox');
-    container.classList.add("relative-container");
-    container.insertAdjacentHTML('afterbegin',`
-        <div class="lightBorder opacDarkBackground radar-companion">
-            <div class="links-container">
-                ${tplPlanets}
-                <span class="top"><a href="#">Top</a></span>
+    if (container) {
+        container.classList.add("relative-container");
+        container.insertAdjacentHTML('afterbegin',`
+            <div class="lightBorder opacDarkBackground radar-companion">
+                <div class="links-container">
+                    ${tplPlanets}
+                    <span class="top"><a href="#">Top</a></span>
+                </div>
             </div>
-        </div>
-    `);
+        `);
+    }
 
     /**
      * Add a quick filter/search box
@@ -96,8 +97,9 @@
         `;
     };
     const header = document.querySelector('#contentBox > .header');
-    header.classList.add('d-flex');
-    header.insertAdjacentHTML('beforeend',`
+    if (header) {
+        header.classList.add('d-flex');
+        header.insertAdjacentHTML('beforeend',`
         <span id="quick-filter">
             ${buildFilterOption('All fleets', 'any-any')}
             ${buildFilterOption('Only owned','friendly-any')}
@@ -109,7 +111,8 @@
         <span id="quick-search">
             <input id="input-quick-search" type="text" name="quickSearch" value="" placeholder="Quick search..." />
         </span>
-    `);
+        `);
+    }
     const inputSearch = document.querySelector('#input-quick-search');
     const inputFilterAll = document.querySelector('#id-qf-any-any');
 
@@ -153,6 +156,44 @@
     });
 
     /**
+     * Incoming warning
+     */
+    let incoming = {};
+    document.querySelectorAll(fleetsSelector).forEach((entry) => {
+        const entryOwner = entry.querySelector('.owner > *').className;
+        const entryDestination = entry.querySelector('.destination .friendly, .destination .allied, .destination .hostile').className;
+        if (entryOwner == 'hostile' && ['friendly','allied'].includes(entryDestination)) {
+            const destination = entry.querySelector('.destination').innerText;
+            if (! incoming[destination]) {
+                incoming[destination] = {
+                    name: entry.querySelector('.name').innerText,
+                    owner: entry.querySelector('.owner').innerText,
+                    destination: destination,
+                    score: entry.querySelector('.score').innerText,
+                    turns: entry.querySelector('.turns').innerText,
+                    parent: entry.closest('.planetHeadSection').id,
+                    //el: entry.cloneNode(true),
+                };
+            }
+            entry.insertAdjacentHTML('beforeend', '<span class="incoming-warning blinking">!</span>');
+        }
+    });
+    const incomingMessages = Object.entries(incoming)
+        .sort((a,b) => b.destinnation.localeCompare(a.destination))
+        .reduce((carry, fleet) => {
+            carry.push('<a class="incoming-destination" href="#'+fleet[1].parent+'">'+fleet[1].destination+'</a>');
+            return carry;
+        },[])
+    ;
+    if (header) {
+        header.insertAdjacentHTML('afterend',`
+        <div id="incoming" class="opacBackground padding">
+        Incoming on: ${incomingMessages.join(', ')} <span class="incoming-warning blinking">!</span>
+        </div>
+        `);
+    }
+
+    /**
      * Custom css
      */
     const style = document.createElement('style');
@@ -167,6 +208,7 @@
         .relative-container { position:relative; }
         #quick-search { display:inline-block; margin-right:15px; }
         #quick-filter { font-family: Tahoma, sans-serif; font-size:12px; text-shadow:none; text-align:center; flex-grow:1; }
+        #incoming { text-align:center; }
         #planetList .hide { display:none; }
         #planetList .actions { padding:4px; }
         #planetList .actions .collapse { display:block; cursor:pointer; }
@@ -174,6 +216,14 @@
         #planetList .collapsed #radarList { display:none; }
         #planetList .collapsed .actions .collapse { display:none; }
         #planetList .collapsed .actions .expand { display:block; }
+        .incoming-warning {
+            display:inline-block; border-radius:50%; padding:0 5px;
+            font-weight:bold; font-size:14px; line-height:14px; background-color:#fff; color:red;
+        }
+        .blinking { animation: blinker 1s linear infinite; }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
     `;
     document.getElementsByTagName('head')[0].appendChild(style);
 
