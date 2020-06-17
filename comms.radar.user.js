@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.4
+// @version      0.5
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -185,7 +185,7 @@
             return carry;
         },[])
     ;
-    if (header) {
+    if (header && incomingMessages.length) {
         header.insertAdjacentHTML('afterend',`
         <div id="incoming" class="opacBackground padding">
         Incoming on: ${incomingMessages.join(', ')} <span class="incoming-warning blinking">!</span>
