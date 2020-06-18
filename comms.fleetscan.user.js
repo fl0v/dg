@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Dark Galaxy - Fleetscan totals
+// @name         Dark Galaxy - Fleet scan
 // @namespace    https://darkgalaxy.com/
 // @version      0.6
 // @description  The enemy is at the gates!
@@ -38,6 +38,7 @@
     let forceOwned = false; // if this fleetscan includes owned fleets then we force owned column on each eta row
 
     let fleets = {
+        have: false,
         // globals
         owned: {
             name: '',
@@ -65,6 +66,7 @@
     }
 
     const addFleet = (playerName, allianceId, allianceName, shName, flCount, allied, owned, eta) => {
+        fleets.have = true;
         if (owned) {
             // GLOBAL OWNED
             fleets.owned.name = playerName;
@@ -226,20 +228,22 @@
         `;
     };
 
-    /*
-     * do i nead to sort etas first ? dont think so.
-     * i think all fleets are always in cronological order in fleetscan
-     */
-    const tplEta = Object.entries(fleets.eta).reduce((carry, a) => {
-        const title = a[0] == 0 ? 'Fleets on orbit' : 'ETA '+a[0];
-        return carry += scanRowTemplate(title,a[1]);
-    },'');
-    document.querySelector('#planetHeader').insertAdjacentHTML('afterend',`
-        <div class="lightBorder ofHidden opacDarkBackground fleetscanTotals">
-            ${scanRowTemplate('Fleet Scan Total', fleets)}
-            ${tplEta}
-        </div>
-    `);
+    if (fleets.have) {
+        /*
+         * do i nead to sort etas first ? dont think so.
+         * i think all fleets are always in cronological order in fleetscan
+         */
+        const tplEta = Object.entries(fleets.eta).reduce((carry, a) => {
+            const title = a[0] == 0 ? 'Fleets on orbit' : 'ETA '+a[0];
+            return carry += scanRowTemplate(title,a[1]);
+        },'');
+        document.querySelector('#planetHeader').insertAdjacentHTML('afterend',`
+            <div class="lightBorder ofHidden opacDarkBackground fleetscanTotals">
+                ${scanRowTemplate('Fleet Scan Total', fleets)}
+                ${tplEta}
+            </div>
+        `);
+    }
 
     /**
      * Custom css
