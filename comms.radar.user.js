@@ -187,10 +187,16 @@
     ;
     if (header && incomingMessages.length) {
         header.insertAdjacentHTML('afterend',`
-        <div id="incoming" class="opacBackground padding">
-        Incoming on: ${incomingMessages.join(', ')} <span class="incoming-warning blinking">!</span>
-        </div>
+            <div id="incoming" class="opacBackground padding">
+            Incoming on: ${incomingMessages.join(', ')} <span class="incoming-warning blinking">!</span>
+            </div>
         `);
+        document.querySelector('#incoming').addEventListener('click', (event) => {
+            event.preventDefault();
+            inputSearch.value = event.target.innerText;
+            inputSearch.dispatchEvent(new Event('input'));
+            return false;
+        });
     }
 
     /**
