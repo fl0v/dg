@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.6
+// @version      0.7
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -179,7 +179,6 @@
         }
     });
     const incomingMessages = Object.entries(incoming)
-        .sort((a,b) => b.destinnation.localeCompare(a.destination))
         .reduce((carry, fleet) => {
             carry.push('<a class="incoming-destination" href="#'+fleet[1].parent+'">'+fleet[1].destination+'</a>');
             return carry;
