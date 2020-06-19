@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.7
+// @version      0.8
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -135,6 +135,7 @@
 
     // quick search action
     const filterFleets = (search) => {
+        showAllFleets();
         Array.from(document.querySelectorAll(fleetsSelector)).forEach((el) => {
             const searchPattern = new RegExp(search, 'gi');
             toggleFleet(el, el.innerText.match(searchPattern));
