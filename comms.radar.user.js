@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.8
+// @version      0.9
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -20,7 +20,7 @@
     const pattern = /([1-9]+)\.(\d+)\.(\d+)[\s]+(.*)/;
     const radarsSelector = '#planetList .planetHeadSection';
     const fleetsSelector = '#planetList .entry';
-    const planetShortcut = (p) => '<a class="planet" href="#'+p.id+'">('+p.coords+') ' + p.name+'</a>';
+    const planetShortcut = (p) => '<a class="planet" href="#'+p.id+'">' + p.coords.split('\.')[0] + '.' + p.coords.split('\.')[1] + '</a>';
     const searchMinLength = 3; // search only if atleast 3 chars
     const toggleFleet = (el,toggle) => { el.style = toggle ? 'display:block;' : 'display:none;'; };
     const showAllFleets = () => { document.querySelectorAll(fleetsSelector).forEach((el) => { toggleFleet(el,true)}); checkEntries(); };
@@ -71,7 +71,19 @@
     /**
      * Lets build a companion box with shortcuts to each radar
      */
-    const tplPlanets = planets.reduce((carry, p) => carry + planetShortcut(p),'');
+    let singlePlanetSystem = new Array();
+    let uniqueSystems = new Array();
+
+    planets.forEach(p => {
+        [g,s] = p.coords.split('\.');
+        if (!uniqueSystems.includes(g + '.' + s)) {
+            uniqueSystems.push(g + '.' + s);
+            singlePlanetSystem.push(p);
+        }
+    });
+
+    const tplPlanets = singlePlanetSystem.reduce((carry, p) => carry + planetShortcut(p),'');
+
     const container = document.querySelector('#contentBox');
     if (container) {
         container.classList.add("relative-container");
@@ -206,11 +218,10 @@
     style.type = 'text/css';
     style.innerHTML = `
         .d-flex { display:flex; }
-        .radar-companion { width:100px; padding:5px; position:fixed; top:190px; right:0; z-index:9999; overflow:hidden; }
-        .radar-companion:hover { width:300px; }
+        .radar-companion { width:50px; padding:5px; position:fixed; top:190px; right:0; z-index:9999; overflow:hidden; }
         .radar-companion .links-container { display:flex;flex-direction:column;  }
         .radar-companion .planet { display:block; margin:2px; font-size:14px; white-space: nowrap; }
-        .radar-companion .top { display:block; margin-top:5px; font-size:12px; text-align:right; }
+        .radar-companion .top { display:block; margin:15px 2px 5px 2px; font-size:12px; text-align:left;}
         .relative-container { position:relative; }
         #quick-search { display:inline-block; margin-right:15px; }
         #quick-filter { font-family: Tahoma, sans-serif; font-size:12px; text-shadow:none; text-align:center; flex-grow:1; }
