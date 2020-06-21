@@ -78,7 +78,7 @@
 
     // last #planetHeader in page (works on scan page and news page)
     const container = Array.from(document.querySelectorAll('#planetHeader')).pop();
-    const header = container.parentNode.querySelector('.header'); // scan result header
+    const header = container ? container.parentNode.querySelector('.header') : null; // scan result header
 
     if (container && header) {
         container.querySelectorAll('.resource img').forEach((el) => {
