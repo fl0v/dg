@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.9
+// @version      0.10
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/comms.radar.user.js
-// @match        https://*.darkgalaxy.com/radar/
+// @match        https://beta.darkgalaxy.com/radar/
 // @grant        none
 // ==/UserScript==
 
@@ -20,24 +20,30 @@
     const pattern = /([1-9]+)\.(\d+)\.(\d+)[\s]+(.*)/;
     const radarsSelector = '#planetList .planetHeadSection';
     const fleetsSelector = '#planetList .entry';
-    const planetShortcut = (p) => '<a class="planet" href="#'+p.id+'">' + p.coords.split('\.')[0] + '.' + p.coords.split('\.')[1] + '</a>';
+    const planetShortcut = (p) => `
+        <a class="planet" href="#${p.id}">${p.coords.split('\.')[0]}.${p.coords.split('\.')[1]}</a>
+    `;
     const searchMinLength = 3; // search only if atleast 3 chars
     const toggleFleet = (el,toggle) => { el.style = toggle ? 'display:block;' : 'display:none;'; };
-    const showAllFleets = () => { document.querySelectorAll(fleetsSelector).forEach((el) => { toggleFleet(el,true)}); checkEntries(); };
+    const showAllFleets = () => {
+        document.querySelectorAll(fleetsSelector).forEach((el) => toggleFleet(el,true));
+        checkEntries();
+    };
     const checkEntries = () => {
         // will hide a radar if all entries are hidden
-        Array.from(document.querySelectorAll(radarsSelector)).forEach((el) => {
-            const hasFleets = Array.from(el.querySelectorAll('.entry')).reduce((carry, entry) => {
-                return carry || entry.style.display !== 'none';
-            }, false);
+        document.querySelectorAll(radarsSelector).forEach((el) => {
+            const hasFleets = Array.from(el.querySelectorAll('.entry'))
+                .reduce((carry, entry) => {
+                    return carry || entry.style.display !== 'none';
+                }, false)
+            ;
             el.parentNode.classList.toggle('hide', ! hasFleets);
         });
     };
 
     let planets = [];
     let systems = [];
-
-    Array.from(document.querySelectorAll(radarsSelector)).forEach((el) => {
+    document.querySelectorAll(radarsSelector).forEach((el) => {
         const planet = el.querySelector(':first-child').innerText;
         if (planet.match(pattern)) {
             const [,g,s,p,n] = pattern.exec(planet);
@@ -71,17 +77,15 @@
     /**
      * Lets build a companion box with shortcuts to each radar
      */
-    let singlePlanetSystem = new Array();
-    let uniqueSystems = new Array();
-
-    planets.forEach(p => {
-        [g,s] = p.coords.split('\.');
+    let singlePlanetSystem = [];
+    let uniqueSystems = [];
+    planets.forEach((p) => {
+        const [g,s] = p.coords.split('\.');
         if (!uniqueSystems.includes(g + '.' + s)) {
             uniqueSystems.push(g + '.' + s);
             singlePlanetSystem.push(p);
         }
     });
-
     const tplPlanets = singlePlanetSystem.reduce((carry, p) => carry + planetShortcut(p),'');
 
     const container = document.querySelector('#contentBox');
@@ -127,18 +131,38 @@
     }
     const inputSearch = document.querySelector('#input-quick-search');
     const inputFilterAll = document.querySelector('#id-qf-any-any');
+    const parseEntry = (entry) => {
+        const elName = entry.querySelector('.name');
+        const elOwner = entry.querySelector('.owner');
+        const elOwnerType = entry.querySelector('.owner > *');
+        const elDestinationType = entry.querySelector('.destination .friendly, .destination .allied, .destination .hostile, .destination .neutral');
+        const elDestination = entry.querySelector('.destination');
+        const elScore = entry.querySelector('.score');
+        const elTurns = entry.querySelector('.turns');
+        const elParent = entry.closest('.planetHeadSection');
+        return {
+            owner: elOwner ? elOwner.innerText.trim() : '',
+            ownerType: elOwnerType ? elOwnerType.className : '',
+            destinationType: elDestinationType ? elDestinationType.className : '',
+            destination: elDestination ? elDestination.innerText.trim() : '',
+            name: elName ? elName.innerText.trim() : '',
+            score: elScore ? elScore.innerText.trim() : '',
+            turns: elTurns ? elTurns.innerText.trim() : '',
+            parent: elParent ? elParent.id : '',
+            //el: entry.cloneNode(true),
+        };
+    };
 
     // quick filter fleets
     document.querySelector('#quick-filter')
         .addEventListener('input', (event) => {
             inputSearch.value = '';
             const [owner,destination] = event.target.value.split('-');
-            Array.from(document.querySelectorAll(fleetsSelector)).forEach((el) => {
-                const entryOwner = el.querySelector('.owner > *').className;
-                const entryDestination = el.querySelector('.destination .friendly, .destination .allied, .destination .hostile').className;
+            document.querySelectorAll(fleetsSelector).forEach((el) => {
+                const info = parseEntry(el);
                 let valid = true;
-                    valid = valid && (owner == 'any' || owner.includes(entryOwner));
-                    valid = valid && (destination == 'any' || destination.includes(entryDestination));
+                    valid = valid && (owner == 'any' || owner.includes(info.ownerType));
+                    valid = valid && (destination == 'any' || destination.includes(info.destinationType));
                 toggleFleet(el,valid);
             });
             checkEntries();
@@ -148,17 +172,17 @@
     // quick search action
     const filterFleets = (search) => {
         showAllFleets();
-        Array.from(document.querySelectorAll(fleetsSelector)).forEach((el) => {
+        document.querySelectorAll(fleetsSelector).forEach((el) => {
             const searchPattern = new RegExp(search, 'gi');
             toggleFleet(el, el.innerText.match(searchPattern));
         });
         checkEntries();
     };
     inputSearch.addEventListener('keydown', (event) => {
-            if (event.keyCode == 27) {
-                event.target.value = '';
-                showAllFleets();
-            }
+        if (event.keyCode == 27) {
+            event.target.value = '';
+            showAllFleets();
+        }
     });
     inputSearch.addEventListener('input', (event) => {
         const search = event.target.value;
@@ -173,20 +197,10 @@
      */
     let incoming = {};
     document.querySelectorAll(fleetsSelector).forEach((entry) => {
-        const entryOwner = entry.querySelector('.owner > *').className;
-        const entryDestination = entry.querySelector('.destination .friendly, .destination .allied, .destination .hostile').className;
-        if (entryOwner == 'hostile' && ['friendly','allied'].includes(entryDestination)) {
-            const destination = entry.querySelector('.destination').innerText;
-            if (! incoming[destination]) {
-                incoming[destination] = {
-                    name: entry.querySelector('.name').innerText,
-                    owner: entry.querySelector('.owner').innerText,
-                    destination: destination,
-                    score: entry.querySelector('.score').innerText,
-                    turns: entry.querySelector('.turns').innerText,
-                    parent: entry.closest('.planetHeadSection').id,
-                    //el: entry.cloneNode(true),
-                };
+        const info = parseEntry(entry);
+        if (info.ownerType == 'hostile' && ['friendly','allied'].includes(info.destinationType)) {
+            if (! incoming[info.destination]) {
+                incoming[info.destination] = info;
             }
             entry.insertAdjacentHTML('beforeend', '<span class="incoming-warning blinking">!</span>');
         }
