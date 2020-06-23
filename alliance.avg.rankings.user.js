@@ -1,9 +1,12 @@
 // ==UserScript==
 // @name         Dark Galaxy - Alliance average rankings
 // @namespace    https://darkgalaxy.com/
-// @version      0.2
+// @version      0.3
 // @description  All your planet are belong to us
 // @author       Biggy
+// @homepage     https://github.com/fl0v/dg
+// @supportURL   https://github.com/fl0v/dg/issues
+// @downloadURL  https://github.com/fl0v/dg/raw/master/alliance.avg.rankings.user.js
 // @match        https://beta.darkgalaxy.com/rankings/alliances/
 // @grant        none
 // @todo         Must drop jquery usage (now its included in dg ui anyway)

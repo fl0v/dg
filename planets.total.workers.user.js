@@ -1,9 +1,12 @@
 // ==UserScript==
 // @name         Dark Galaxy - Total workers
 // @namespace    https://darkgalaxy.com/
-// @version      0.1
+// @version      0.2
 // @description  It does not change the values already in page, so other scripts will still work as expected (i hope)
-// @author       Biggy (copied Raptors script)
+// @author       Biggy
+// @homepage     https://github.com/fl0v/dg
+// @supportURL   https://github.com/fl0v/dg/issues
+// @downloadURL  https://github.com/fl0v/dg/raw/master/planets.total.workers.user.js
 // @match        https://beta.darkgalaxy.com/planet/*/
 // @match        https://beta.darkgalaxy.com/planets/
 // @grant        none

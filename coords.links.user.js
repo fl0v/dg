@@ -1,9 +1,12 @@
 // ==UserScript==
 // @name         Dark Galaxy - Navigation link on any set of coords (except 0.0.0)
 // @namespace    https://darkgalaxy.com/
-// @version      0.5
+// @version      0.6
 // @description  Try to take over the galaxy!
-// @author       Bean & Biggy
+// @author       Biggy
+// @homepage     https://github.com/fl0v/dg
+// @supportURL   https://github.com/fl0v/dg/issues
+// @downloadURL  https://github.com/fl0v/dg/raw/master/coords.links.user.js
 // @match        https://beta.darkgalaxy.com/planets/
 // @match        https://beta.darkgalaxy.com/planet/*/
 // @match        https://beta.darkgalaxy.com/radar/
@@ -29,7 +32,7 @@
     if (location.href.match(/planet\/[0-9]+/)) {    // Single planet page
         items = $('#planetHeader .coords, .coords > span'); // top planet coords + planet comms
     } else { // Planets list (#planetList .coords > span), PLanet comms page (#radarList .entry .coords > span)
-        items = $('.coords > span');        
+        items = $('.coords > span');
     }
 
     items.each(function() {

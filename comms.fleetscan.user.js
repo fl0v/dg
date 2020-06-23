@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleet scan
 // @namespace    https://darkgalaxy.com/
-// @version      0.6
+// @version      0.7
 // @description  The enemy is at the gates!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/comms.fleetscan.user.js
-// @match        https://*.darkgalaxy.com/news/view/*/
-// @match        https://*.darkgalaxy.com/planet/*/comms/
+// @match        https://beta.darkgalaxy.com/news/view/*/
+// @match        https://beta.darkgalaxy.com/planet/*/comms/
 // @grant        none
 // ==/UserScript==
 

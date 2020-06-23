@@ -1,9 +1,12 @@
 // ==UserScript==
 // @name         Dark Galaxy - Replace planets images
 // @namespace    https://darkgalaxy.com/
-// @version      0.1
+// @version      0.2
 // @description  All mine i tell you!
-// @author       Biggy & helloweenpt
+// @author       Biggy
+// @homepage     https://github.com/fl0v/dg
+// @supportURL   https://github.com/fl0v/dg/issues
+// @downloadURL  https://github.com/fl0v/dg/raw/master/planets.images.user.js
 // @match        https://beta.darkgalaxy.com/planets/
 // @match        https://beta.darkgalaxy.com/planet/*
 // @match        https://beta.darkgalaxy.com/navigation/*
