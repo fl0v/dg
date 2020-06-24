@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name         Dark Galaxy - Replace planets images
+// @name         Dark Galaxy - Replace Fleet images
 // @namespace    https://darkgalaxy.com/
 // @version      0.2
 // @description  All mine i tell you!
 // @author       Sniky
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
-// downloadURL  https://github.com/fl0v/dg/raw/master/fleet.images.user.js
+// downloadURL  https://github.com/florinnichifiriuc/dg/raw/master/fleet.images.user.js
 // @match        https://beta.darkgalaxy.com/fleet/*
 // @match        https://beta.darkgalaxy.com/planet/*/production/
 // @grant        none
