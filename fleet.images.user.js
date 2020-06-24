@@ -25,7 +25,7 @@
         let image =img.src.replace('main/ships/holo_','small/').replace('main/ships/projector','small/trader').replace('main/ships/trader','small/trader').replace('projector','trader').replace('holo_','');
         img.src = image;
     };
-         Array.from(document.querySelectorAll('.transferRow img')).forEach((img) => replaceImage(img));
-    Array.from(document.querySelectorAll('.entry .left.structureImage img')).forEach((img) => replaceImage(img));
-    Array.from(document.querySelectorAll(' .structureImageSmall img')).forEach((img) => replaceImage(img));
-    })();
+    document.querySelectorAll('.transferRow img').forEach(replaceImage);
+    document.querySelectorAll('.entry .left.structureImage img').forEach(replaceImage);
+    document.querySelectorAll(' .structureImageSmall img').forEach(replaceImage);
+})();
