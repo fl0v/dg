@@ -6,7 +6,7 @@
 // @author       Sniky
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
-// downloadURL  https://github.com/florinnichifiriuc/dg/raw/master/fleet.images.user.js
+// @downloadURL  https://github.com/fl0v/dg/raw/master/fleet.images.user.js
 // @match        https://beta.darkgalaxy.com/fleet/*
 // @match        https://beta.darkgalaxy.com/planet/*/production/
 // @grant        none
