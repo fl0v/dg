@@ -16,7 +16,7 @@
 
     const getScore = (row) => {
         let score = $(row).find('.score')[0].innerText;
-        return parseInt(score.replace(',',''),10);
+        return parseInt(score.replace(/,/g,''),10);
     };
 
     const getMembers = (row) => {
