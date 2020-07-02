@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Alliance average rankings
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
