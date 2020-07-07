@@ -18,6 +18,7 @@
 - **[comms.radar.user.js](https://github.com/fl0v/dg/raw/master/comms.radar.user.js)** Some radar page enhancements (quick search & quick shortcuts)
 - **[comms.surfacescan.user.js](https://github.com/fl0v/dg/raw/master/comms.surfacescan.user.js)** Surface scan required soldiers and housing
 - **[news.battlereport.user.js](https://github.com/fl0v/dg/raw/master/news.battlereport.user.js)** Battle report lost resource total
+- **[fleet.overview.user.js](https://github.com/fl0v/dg/raw/master/fleet.overview.user.js)** Fleet overview score calculator
 
 ## Want to help ?
 Checkout the [workflow tutorial](workflow.md)
