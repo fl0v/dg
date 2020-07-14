@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleet overview
 // @namespace    https://darkgalaxy.com/
-// @version      0.1
+// @version      0.2
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
@@ -38,7 +38,7 @@
         'Holo Destroyer': 9.375,
         'Holo Cruiser': 25.7,
         'Holo Battleship': 193.5,
-        'Soldier': 0.3,
+        'Soldier': 0.003,
         'Worker': 0.001,
     };
 
