@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Battle report analyzer
 // @namespace    https://darkgalaxy.com/
-// @version      0.2
+// @version      0.3
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
