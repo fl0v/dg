@@ -38,7 +38,7 @@
         'Holo Destroyer': 9.375,
         'Holo Cruiser': 25.7,
         'Holo Battleship': 193.5,
-        'Soldier': 0.3,
+        'Soldier': 0.003,
         'Worker': 0.001,
     };
 
