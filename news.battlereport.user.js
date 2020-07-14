@@ -33,7 +33,7 @@
     Holo_Cruiser: { metal: 6000, mineral: 3000, score: 25.7 },
     Holo_Battleship: { metal: 30000, mineral: 20000, score: 193.5 },
     Worker: { metal: 0, mineral: 0, score: 0.001 },
-    Soldier: { metal: 30, mineral: 20, score: 0.3 },
+    Soldier: { metal: 30, mineral: 20, score: 0.003 },
     Metal: { metal: 1, mineral: 0, score: 0 },
     Mineral: { metal: 0, mineral: 1, score: 0 },
     Energy: { metal: 0, mineral: 0, score: 0 },
