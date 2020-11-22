@@ -77,6 +77,7 @@
     const metal = resTotal('.resource.metal');
     const mineral = resTotal('.resource.mineral');
     const energy = resTotal('.resource.energy');
+    const food = resTotal('.resource.food');
     const pop = resTotal('.resource.population');
     const sold = resTotal('.resource.soldier');
     const ground = resTotal('.resource.ground');
@@ -168,6 +169,7 @@
         + '<div class="resource-container">'
         + '<div class="resource metal">' + resourceTemplate(metal, 'metal') + '</div>'
         + '<div class="resource mineral">' + resourceTemplate(mineral, 'mineral') + '</div>'
+        + '<div class="resource food">' + resourceTemplate(food, 'food') + '</div>'
         + '<div class="resource energy">' + resourceTemplate(energy, 'energy') + '</div>'
         + '</div>'
         + '<div class="activity-container d-flex-grow">'
@@ -208,7 +210,7 @@
         + ' .d-flex-jce { justify-content: flex-end; }'
         + ' .d-flex-jcsb { justify-content: space-between; }'
         + ' .d-flex-column { flex-direction: column; }'
-        ;
+    ;
     document.getElementsByTagName('head')[0].appendChild(style);
 
 
@@ -237,6 +239,7 @@
         c += txtSpacer + "\n";
         c += pe(" Metal:", pl) + ps(formatNumber(metal.stored), pv) + ps('(+' + formatNumber(metal.production) + ')', pv + 4) + ps(formatNumber(metal.perc) + '%', pv + 2) + " (avg)\n";
         c += pe(" Mineral:", pl) + ps(formatNumber(mineral.stored), pv) + ps('(+' + formatNumber(mineral.production) + ')', pv + 4) + ps(formatNumber(mineral.perc) + '%', pv + 2) + " (avg)\n";
+        c += pe(" Food:", pl) + ps(formatNumber(food.stored), pv) + ps('(+' + formatNumber(food.production) + ')', pv + 4) + ps(formatNumber(food.perc) + '%', pv + 2) + " (avg)\n";
         c += pe(" Energy:", pl) + ps(formatNumber(energy.stored), pv) + ps('(+' + formatNumber(energy.production) + ')', pv + 4) + ps(formatNumber(energy.perc) + '%', pv + 2) + " (avg)\n";
         c += txtSpacer + "\n";
         c += pe(" Workers:", pl) + formatResource(pop, 'worker') + "\n";
