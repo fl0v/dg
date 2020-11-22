@@ -148,8 +148,8 @@
 
     const planetsList = (label, planets, cls) => {
         let msgs = planets.reduce((carry, a) => {
-            console.log('planet',a);
-            carry.push(cls ? '<span class="planet-item">(<b>' + a.coords + '</b>) ' + a.name + '</span>' : '('+a.coords + ') ' + a.name);
+            console.log('planet', a);
+            carry.push(cls ? '<span class="planet-item">(<b>' + a.coords + '</b>) ' + a.name + '</span>' : '(' + a.coords + ') ' + a.name);
             return carry;
         }, []);
         if (msgs.length) {
@@ -209,8 +209,7 @@
         + ' .d-flex-wrap { flex-wrap:wrap; }'
         + ' .d-flex-jce { justify-content: flex-end; }'
         + ' .d-flex-jcsb { justify-content: space-between; }'
-        + ' .d-flex-column { flex-direction: column; }'
-    ;
+        + ' .d-flex-column { flex-direction: column; }';
     document.getElementsByTagName('head')[0].appendChild(style);
 
 
@@ -221,7 +220,7 @@
     copy.style.cursor = 'pointer';
     copy.addEventListener('click', e => {
         e.preventDefault();
-        navigator.permissions.query({ name: "clipboard-write" }).then(r => {
+        navigator.permissions.query({name: "clipboard-write"}).then(r => {
             if (["granted", "prompt"].includes(r.state)) {
                 navigator.clipboard.writeText(textStats());
             }
