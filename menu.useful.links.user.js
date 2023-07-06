@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Dark Galaxy - Useful links
 // @namespace    https://darkgalaxy.com/
-// @version      0.2
+// @version      0.3
 // @description  try to take over the world!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/menu.useful.links.user.js
 // @match        https://beta.darkgalaxy.com/*
+// @match        https://andromeda.darkgalaxy.com/*
 // @grant        none
 // ==/UserScript==
 
