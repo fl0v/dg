@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Dark Galaxy - Planets stats
 // @namespace    https://darkgalaxy.com/
-// @version      0.7
+// @version      0.8
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/planets.stats.user.js
 // @match        https://beta.darkgalaxy.com/planets/
+// @match        https://andromeda.darkgalaxy.com/planets/
 // @grant        none
 // ==/UserScript==
 
