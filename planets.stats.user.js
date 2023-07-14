@@ -14,8 +14,8 @@
 (function () {
 
     const resPattern = /([\d,]+)\s+\(([\+\d,]+)\)\s+([\d%]+)/; // will split resource data ex: '52,126 (+3,465) 70%'
-    const popPattern = /([\d,]+)\s+\(([\+\d,]+)\soccupied\)/; // will split population  data ex: '52,126 (5,000 occupied)'
-    const othPattern = /([\d,]+)/; // simple value for other resources
+    const popPattern = /([\d,]+)\s+\/\s+[\d,]+\s+\(([\+\d,]+)\s+available\)/; // will split population  data ex: '52,126 (47,126 available)'
+    const othPattern = /([\d,]+)/; // simple value for other resources (disabled because it does not work)
     const parseValue = (v) => parseInt(String(v).replace(/[,\+%]+/g, '')); // will normalize a value to be able to use it in Math operation '52,126' -> 52126; '+3,465' -> 3465; '70%' -> 70
     const formatNumber = (v) => String(v).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'); // same format as the rest of the values in ui
 
@@ -24,7 +24,7 @@
      */
     const resTotal = function (xpath) {
         let total = {
-            stored: 0, // res or pop (including occupied)
+            stored: 0, // res or pop
             production: 0,
             perc: 0,
             avg: 0, // used for avg pop
@@ -33,20 +33,22 @@
         total = Array.from(document.querySelectorAll(xpath))
             .reduce(function (carry, el) {
                 var val = el.innerText;
-                var stored, production, perc;
+                var stored=0, production=0, perc=0, count=1;
                 if (resPattern.test(val)) {
                     [, stored, production, perc] = val.match(resPattern);
                 } else if (popPattern.test(val)) {
-                    let [, iddle, occupied] = val.match(popPattern);
-                    stored = parseValue(iddle) + parseValue(occupied);
-                } else if (othPattern.test(val)) {
+                    let [, pop, available] = val.match(popPattern);
+                    stored = parseValue(pop);
+                } else if (false && othPattern.test(val)) {
                     [, stored] = val.match(othPattern);
+                } else {
+                    count=0;
                 }
                 return {
                     stored: carry.stored + parseValue(stored),
                     production: carry.production + parseValue(production),
                     perc: carry.perc + parseValue(perc),
-                    count: carry.count + 1
+                    count: carry.count + count
                 }
             }, total);
         if (total.count > 0) {
@@ -78,11 +80,10 @@
     const mineral = resTotal('.resource.mineral');
     const energy = resTotal('.resource.energy');
     const food = resTotal('.resource.food');
-    const pop = resTotal('.resource.population');
+    const pop = resTotal('.resource.right');
     const sold = resTotal('.resource.soldier');
     const ground = resTotal('.resource.ground');
     const orbit = resTotal('.resource.orbit');
-    //const food = resTotal('.resource.food'); // i miss food :((
 
     /**
      * Lets build a summary of all activity
@@ -175,9 +176,6 @@
         + '<div class="activity-container d-flex-grow">'
         + '<div class="d-flex d-flex-jce">'
         + '<div class="resource population">' + resourceTemplate(pop, 'worker') + '</div>'
-        + '<div class="resource solider">' + resourceTemplate(sold, 'soldier') + '</div>'
-        + '<div class="resource ground">' + resourceTemplate(ground, 'ground') + '</div>'
-        + '<div class="resource orbit">' + resourceTemplate(orbit, 'orbit') + '</div>'
         + '</div>'
         + '<div class="activity">'
         + activitySummary('Producing:', activity.producing, 'activity-producing')
@@ -242,9 +240,6 @@
         c += pe(" Energy:", pl) + ps(formatNumber(energy.stored), pv) + ps('(+' + formatNumber(energy.production) + ')', pv + 4) + ps(formatNumber(energy.perc) + '%', pv + 2) + " (avg)\n";
         c += txtSpacer + "\n";
         c += pe(" Workers:", pl) + formatResource(pop, 'worker') + "\n";
-        c += pe(" Soldiers:", pl) + formatResource(sold, 'soldier') + "\n";
-        c += pe(" Ground:", pl) + formatResource(ground, 'ground') + "\n";
-        c += pe(" Orbit:", pl) + formatResource(ground, 'orbit') + "\n";
         c += txtSpacer;
         c += activitySummary("\n Producing:", activity.producing);
         c += activitySummary("\n Training:", activity.training);
