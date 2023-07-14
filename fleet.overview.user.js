@@ -1,13 +1,12 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleet overview
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/fleet.overview.user.js
-// @match        https://beta.darkgalaxy.com/fleets/*/
-// @match        https://andromeda.darkgalaxy.com/fleets/*/
+// @match        https://*.darkgalaxy.com/fleets/*/
 // @grant        none
 // ==/UserScript==
 

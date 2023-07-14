@@ -1,16 +1,14 @@
 // ==UserScript==
 // @name         Dark Galaxy - Surface scan
 // @namespace    https://darkgalaxy.com/
-// @version      0.2
+// @version      0.3
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/comms.surfacescan.user.js
-// @match        https://beta.darkgalaxy.com/news/view/*/
-// @match        https://beta.darkgalaxy.com/planet/*/comms/
-// @match        https://andromeda.darkgalaxy.com/news/view/*/
-// @match        https://andromeda.darkgalaxy.com/planet/*/comms/
+// @match        https://*.darkgalaxy.com/news/view/*/
+// @match        https://*.darkgalaxy.com/planet/*/comms/
 // @grant        none
 // ==/UserScript==
 

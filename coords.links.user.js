@@ -1,22 +1,17 @@
 // ==UserScript==
 // @name         Dark Galaxy - Navigation link on any set of coords (except 0.0.0)
 // @namespace    https://darkgalaxy.com/
-// @version      0.7
+// @version      0.8
 // @description  Try to take over the galaxy!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/coords.links.user.js
-// @match        https://beta.darkgalaxy.com/planets/
-// @match        https://beta.darkgalaxy.com/planet/*/
-// @match        https://beta.darkgalaxy.com/radar/
-// @match        https://beta.darkgalaxy.com/fleets/
-// @match        https://beta.darkgalaxy.com/news/
-// @match        https://andromeda.darkgalaxy.com/planets/
-// @match        https://andromeda.darkgalaxy.com/planet/*/
-// @match        https://andromeda.darkgalaxy.com/radar/
-// @match        https://andromeda.darkgalaxy.com/fleets/
-// @match        https://andromeda.darkgalaxy.com/news/
+// @match        https://*.darkgalaxy.com/planets/
+// @match        https://*.darkgalaxy.com/planet/*/
+// @match        https://*.darkgalaxy.com/radar/
+// @match        https://*.darkgalaxy.com/fleets/
+// @match        https://*.darkgalaxy.com/news/
 // @grant        none
 // @todo         Must drop jquery usage (now its included in dg ui anyway)
 // ==/UserScript==
