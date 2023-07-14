@@ -1,18 +1,15 @@
 // ==UserScript==
 // @name         Dark Galaxy - Replace planets images
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @description  All mine i tell you!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/planets.images.user.js
-// @match        https://beta.darkgalaxy.com/planets/
-// @match        https://beta.darkgalaxy.com/planet/*
-// @match        https://beta.darkgalaxy.com/navigation/*
-// @match        https://andromeda.darkgalaxy.com/planets/
-// @match        https://andromeda.darkgalaxy.com/planet/*
-// @match        https://andromeda.darkgalaxy.com/navigation/*
+// @match        https://*.darkgalaxy.com/planets/
+// @match        https://*.darkgalaxy.com/planet/*
+// @match        https://*.darkgalaxy.com/navigation/*
 // @grant        none
 // ==/UserScript==
 

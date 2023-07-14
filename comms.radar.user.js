@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.11
+// @version      0.12
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/comms.radar.user.js
-// @match        https://beta.darkgalaxy.com/radar/
-// @match        https://andromeda.darkgalaxy.com/radar/
+// @match        https://*.darkgalaxy.com/radar/
 // @grant        none
 // ==/UserScript==
 
