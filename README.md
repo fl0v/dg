@@ -22,7 +22,3 @@
 
 ## Want to help ?
 Checkout the [workflow tutorial](workflow.md)
-
-## TODO
-- remove jquery references
-- Script: Save post-it notes in any page, attached to a planet or a fleet.
