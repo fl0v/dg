@@ -1,89 +1,98 @@
 // ==UserScript==
 // @name         Dark Galaxy - Planets stats
 // @namespace    https://darkgalaxy.com/
-// @version      0.8
+// @version      0.9
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
 // @downloadURL  https://github.com/fl0v/dg/raw/master/planets.stats.user.js
-// @match        https://beta.darkgalaxy.com/planets/
-// @match        https://andromeda.darkgalaxy.com/planets/
+// @match        https://*.darkgalaxy.com/planets/
 // @grant        none
 // ==/UserScript==
 
 (function () {
 
+    const resourceTypePattern = /src="\/images\/units\/small\/([^\.]+)\./; // used to detect the resource type using the image url
     const resPattern = /([\d,]+)\s+\(([\+\d,]+)\)\s+([\d%]+)/; // will split resource data ex: '52,126 (+3,465) 70%'
-    const popPattern = /([\d,]+)\s+\(([\+\d,]+)\soccupied\)/; // will split population  data ex: '52,126 (5,000 occupied)'
+    const popPattern = /([\d,]+)\s+\/\s+[\d,]+\s+\(([\+\d,]+)\s+available\)/; // will split population  data ex: '52,126 (47,126 available)'
     const othPattern = /([\d,]+)/; // simple value for other resources
     const parseValue = (v) => parseInt(String(v).replace(/[,\+%]+/g, '')); // will normalize a value to be able to use it in Math operation '52,126' -> 52126; '+3,465' -> 3465; '70%' -> 70
     const formatNumber = (v) => String(v).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'); // same format as the rest of the values in ui
 
     /**
-     * Will agregate the numbers (stored, production and percentage) for a resource selector
+     * Lets aggregate stats data
      */
-    const resTotal = function (xpath) {
-        let total = {
-            stored: 0, // res or pop (including occupied)
-            production: 0,
-            perc: 0,
-            avg: 0, // used for avg pop
-            count: 0
-        };
-        total = Array.from(document.querySelectorAll(xpath))
-            .reduce(function (carry, el) {
-                var val = el.innerText;
-                var stored, production, perc;
-                if (resPattern.test(val)) {
-                    [, stored, production, perc] = val.match(resPattern);
-                } else if (popPattern.test(val)) {
-                    let [, iddle, occupied] = val.match(popPattern);
-                    stored = parseValue(iddle) + parseValue(occupied);
-                } else if (othPattern.test(val)) {
-                    [, stored] = val.match(othPattern);
-                }
-                return {
-                    stored: carry.stored + parseValue(stored),
-                    production: carry.production + parseValue(production),
-                    perc: carry.perc + parseValue(perc),
-                    count: carry.count + 1
-                }
-            }, total);
-        if (total.count > 0) {
-            total.perc = (total.perc / total.count).toFixed(2);
-            total.avg = (total.stored / total.count).toFixed(2);
-        }
-        return total;
+    let totalStats = {
+        planetsCount: 0,
+        orbit: 0,
+        ground: 0,
+        soldiers: 0,
+        workers: 0,
+        workersAvg: 0,
+        workersAvailable: 0,
+        metal: 0,
+        metalProd: 0,
+        metalAvgRate: 0,
+        mineral: 0,
+        mineralProd: 0,
+        mineralAvgRate: 0,
+        food: 0,
+        foodProd: 0,
+        foodAvgRate: 0,
+        energy: 0,
+        energyProd: 0,
+        energyAvgRate: 0,
     };
-
-    const formatResource = (total, code) => {
-        if (code == 'worker') {
-            return formatNumber(total.stored) + ' / AVG: ' + formatNumber(total.avg);
-        } else if (code == 'soldier' || code == 'ground' || code == 'orbit') {
-            return formatNumber(total.stored);
-        } else { // resource
-            return formatNumber(total.stored) + ' (+' + formatNumber(total.production) + ') AVG: ' + formatNumber(total.perc) + '%';
-        }
-    };
-
-    const resourceTemplate = (total, code) => {
-        return '<div class="left seperatorRight">'
-            + '<img src="/images/units/small/' + code + '.gif" title="' + code + '">'
-            + '</div>'
-            + '<span>' + formatResource(total, code) + '</span>'
-            ;
-    };
-
-    const metal = resTotal('.resource.metal');
-    const mineral = resTotal('.resource.mineral');
-    const energy = resTotal('.resource.energy');
-    const food = resTotal('.resource.food');
-    const pop = resTotal('.resource.population');
-    const sold = resTotal('.resource.soldier');
-    const ground = resTotal('.resource.ground');
-    const orbit = resTotal('.resource.orbit');
-    //const food = resTotal('.resource.food'); // i miss food :((
+    document.querySelectorAll('.planetHeadSection .resource')
+        .forEach(element => {
+            const contentHtml = element.innerHTML;
+            const contentTxt = element.innerText;
+            let type = '';
+            if (resourceTypePattern.test(contentHtml)) {
+                [, type] = contentHtml.match(resourceTypePattern);
+            }
+            if (type == 'metal') {
+                let values = contentTxt.match(resPattern);
+                totalStats.metal += parseValue(values[1]);
+                totalStats.metalProd += parseValue(values[2]);
+                totalStats.metalAvgRate += parseValue(values[3]); // we'll divide by planets count at the end
+                totalStats.planetsCount++; // each time we encounter a metal value we also increment the planets count
+            } else if (type == 'mineral') {
+                let values = contentTxt.match(resPattern);
+                totalStats.mineral += parseValue(values[1]);
+                totalStats.mineralProd += parseValue(values[2]);
+                totalStats.mineralAvgRate += parseValue(values[3]); // we'll divide by planets count at the end
+            } else if (type == 'food') {
+                let values = contentTxt.match(resPattern);
+                totalStats.food += parseValue(values[1]);
+                totalStats.foodProd += parseValue(values[2]);
+                totalStats.foodAvgRate += parseValue(values[3]); // we'll divide by planets count at the end
+            } else if (type == 'energy') {
+                let values = contentTxt.match(resPattern);
+                totalStats.energy += parseValue(values[1]);
+                totalStats.energyProd += parseValue(values[2]);
+                totalStats.energyAvgRate += parseValue(values[3]); // we'll divide by planets count at the end
+            } else if (type == 'worker') {
+                let values = contentTxt.match(popPattern);
+                totalStats.workers += parseValue(values[1]);
+                totalStats.workersAvailable += parseValue(values[2]);
+            } else if (type == 'soldier') {
+                let values = contentTxt.match(othPattern);
+                totalStats.soldiers += parseValue(values[1]);
+            } else if (type == 'ground') {
+                let values = contentTxt.match(othPattern);
+                totalStats.ground += parseValue(values[1]);
+            } else if (type == 'orbit') {
+                let values = contentTxt.match(othPattern);
+                totalStats.orbit += parseValue(values[1]);
+            }
+        });
+    totalStats.metalAvgRate = (totalStats.metalAvgRate / totalStats.planetsCount).toFixed(2);
+    totalStats.mineralAvgRate = (totalStats.mineralAvgRate / totalStats.planetsCount).toFixed(2);
+    totalStats.foodAvgRate = (totalStats.foodAvgRate / totalStats.planetsCount).toFixed(2);
+    totalStats.energyAvgRate = (totalStats.energyAvgRate / totalStats.planetsCount).toFixed(2);
+    totalStats.workersAvg = (totalStats.workers / totalStats.planetsCount).toFixed(2);
 
     /**
      * Lets build a summary of all activity
@@ -129,7 +138,7 @@
             const planet = el.closest('.locationWrapper');
             const coords = planet.querySelector('.coords').innerText;
             const name = planet.querySelector('.planetName').innerText;
-            planets.notBuilding.push({coords: coords, name: name});
+            planets.notBuilding.push({ coords: coords, name: name });
         }
     });
 
@@ -149,7 +158,6 @@
 
     const planetsList = (label, planets, cls) => {
         let msgs = planets.reduce((carry, a) => {
-            console.log('planet', a);
             carry.push(cls ? '<span class="planet-item">(<b>' + a.coords + '</b>) ' + a.name + '</span>' : '(' + a.coords + ') ' + a.name);
             return carry;
         }, []);
@@ -162,23 +170,31 @@
     /**
      * add a nice top panel for the planet list
      */
+    const resourceTemplate = (code, content) => {
+        return '<div class="left seperatorRight">'
+            + '<img src="/images/units/small/' + code + '.gif" title="' + code + '">'
+            + '</div>'
+            + '<span>' + content + '</span>'
+            ;
+    };
+
     document.querySelector('#planetList').insertAdjacentHTML('afterbegin',
         '<div class="opacDarkBackground lightBorder ofHidden seperator planetStats">'
         + '<span class="right copy-hint">Click to copy to clipboard</span>'
-        + '<div class="header border">Total resources (' + metal.count + ' planets)</div>'
+        + '<div class="header border">Total resources (planets: ' + totalStats.planetsCount + ')</div>'
         + '<div class="d-flex d-flex-jcsb">'
         + '<div class="resource-container">'
-        + '<div class="resource metal">' + resourceTemplate(metal, 'metal') + '</div>'
-        + '<div class="resource mineral">' + resourceTemplate(mineral, 'mineral') + '</div>'
-        + '<div class="resource food">' + resourceTemplate(food, 'food') + '</div>'
-        + '<div class="resource energy">' + resourceTemplate(energy, 'energy') + '</div>'
+        + '<div class="resource metal">' + resourceTemplate('metal', formatNumber(totalStats.metal) + ' (+' + formatNumber(totalStats.metalProd) + ') AVG: ' + formatNumber(totalStats.metalAvgRate) + '%') + '</div>'
+        + '<div class="resource mineral">' + resourceTemplate('mineral', formatNumber(totalStats.mineral) + ' (+' + formatNumber(totalStats.mineralProd) + ') AVG: ' + formatNumber(totalStats.mineralAvgRate) + '%') + '</div>'
+        + '<div class="resource food">' + resourceTemplate('food', formatNumber(totalStats.food) + ' (+' + formatNumber(totalStats.foodProd) + ') AVG: ' + formatNumber(totalStats.foodAvgRate) + '%') + '</div>'
+        + '<div class="resource energy">' + resourceTemplate('energy', formatNumber(totalStats.energy) + ' (+' + formatNumber(totalStats.energyProd) + ') AVG: ' + formatNumber(totalStats.energyAvgRate) + '%') + '</div>'
         + '</div>'
         + '<div class="activity-container d-flex-grow">'
         + '<div class="d-flex d-flex-jce">'
-        + '<div class="resource population">' + resourceTemplate(pop, 'worker') + '</div>'
-        + '<div class="resource solider">' + resourceTemplate(sold, 'soldier') + '</div>'
-        + '<div class="resource ground">' + resourceTemplate(ground, 'ground') + '</div>'
-        + '<div class="resource orbit">' + resourceTemplate(orbit, 'orbit') + '</div>'
+        + '<div class="resource population">' + resourceTemplate('worker', formatNumber(totalStats.workers) + ' / AVG: ' + formatNumber(totalStats.workersAvg)) + '</div>'
+        + '<div class="resource solider">' + resourceTemplate('soldier', formatNumber(totalStats.soldiers)) + '</div>'
+        + '<div class="resource ground">' + resourceTemplate('ground', formatNumber(totalStats.ground)) + '</div>'
+        + '<div class="resource orbit">' + resourceTemplate('orbit', formatNumber(totalStats.orbit)) + '</div>'
         + '</div>'
         + '<div class="activity">'
         + activitySummary('Producing:', activity.producing, 'activity-producing')
@@ -213,7 +229,6 @@
         + ' .d-flex-column { flex-direction: column; }';
     document.getElementsByTagName('head')[0].appendChild(style);
 
-
     /**
      * copy/paste
      */
@@ -221,11 +236,7 @@
     copy.style.cursor = 'pointer';
     copy.addEventListener('click', e => {
         e.preventDefault();
-        navigator.permissions.query({name: "clipboard-write"}).then(r => {
-            if (["granted", "prompt"].includes(r.state)) {
-                navigator.clipboard.writeText(textStats());
-            }
-        });
+        navigator.clipboard.writeText(textStats());
     });
     const txtBorder = '====================';
     const txtSpacer = '--------------------';
@@ -233,19 +244,19 @@
     const ps = (s, c) => String(s).padStart(c, ' ');
     const textStats = function () {
         const pl = 11; // pad label 11 spaces at the end
-        const pv = 7;  // pad values with 7 spaces at the start
+        const pv = 7; // pad values with 7 spaces at the start
         var c = txtBorder + "\n";
-        c += " Planets " + metal.count + ' / Turn ' + document.querySelector('#turnNumber').innerText + "\n";
+        c += " Planets " + totalStats.planetsCount + ' / Turn ' + document.querySelector('#turnNumber').innerText + "\n";
         c += txtSpacer + "\n";
-        c += pe(" Metal:", pl) + ps(formatNumber(metal.stored), pv) + ps('(+' + formatNumber(metal.production) + ')', pv + 4) + ps(formatNumber(metal.perc) + '%', pv + 2) + " (avg)\n";
-        c += pe(" Mineral:", pl) + ps(formatNumber(mineral.stored), pv) + ps('(+' + formatNumber(mineral.production) + ')', pv + 4) + ps(formatNumber(mineral.perc) + '%', pv + 2) + " (avg)\n";
-        c += pe(" Food:", pl) + ps(formatNumber(food.stored), pv) + ps('(+' + formatNumber(food.production) + ')', pv + 4) + ps(formatNumber(food.perc) + '%', pv + 2) + " (avg)\n";
-        c += pe(" Energy:", pl) + ps(formatNumber(energy.stored), pv) + ps('(+' + formatNumber(energy.production) + ')', pv + 4) + ps(formatNumber(energy.perc) + '%', pv + 2) + " (avg)\n";
+        c += pe(" Metal:", pl) + ps(formatNumber(totalStats.metal), pv) + ps('(+' + formatNumber(totalStats.metalProd) + ')', pv + 4) + ps(formatNumber(totalStats.metalAvgRate) + '%', pv + 2) + " (avg)\n";
+        c += pe(" Mineral:", pl) + ps(formatNumber(totalStats.mineral), pv) + ps('(+' + formatNumber(totalStats.mineralProd) + ')', pv + 4) + ps(formatNumber(totalStats.mineralAvgRate) + '%', pv + 2) + " (avg)\n";
+        c += pe(" Food:", pl) + ps(formatNumber(totalStats.food), pv) + ps('(+' + formatNumber(totalStats.foodProd) + ')', pv + 4) + ps(formatNumber(totalStats.foodAvgRate) + '%', pv + 2) + " (avg)\n";
+        c += pe(" Energy:", pl) + ps(formatNumber(totalStats.energy), pv) + ps('(+' + formatNumber(totalStats.energyProd) + ')', pv + 4) + ps(formatNumber(totalStats.energyAvgRate) + '%', pv + 2) + " (avg)\n";
         c += txtSpacer + "\n";
-        c += pe(" Workers:", pl) + formatResource(pop, 'worker') + "\n";
-        c += pe(" Soldiers:", pl) + formatResource(sold, 'soldier') + "\n";
-        c += pe(" Ground:", pl) + formatResource(ground, 'ground') + "\n";
-        c += pe(" Orbit:", pl) + formatResource(ground, 'orbit') + "\n";
+        c += pe(" Workers:", pl) + formatNumber(totalStats.workers) + ' / AVG: ' + formatNumber(totalStats.workersAvg) + "\n";
+        c += pe(" Soldiers:", pl) + formatNumber(totalStats.soldiers) + "\n";
+        c += pe(" Ground:", pl) + formatNumber(totalStats.ground) + "\n";
+        c += pe(" Orbit:", pl) + formatNumber(totalStats.orbit) + "\n";
         c += txtSpacer;
         c += activitySummary("\n Producing:", activity.producing);
         c += activitySummary("\n Training:", activity.training);
@@ -253,4 +264,6 @@
         c += "\n" + txtBorder + "\n";
         return c;
     };
+    console.log(textStats());
+
 })();
