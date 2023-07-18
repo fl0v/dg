@@ -9,29 +9,25 @@
 // @downloadURL  https://github.com/fl0v/dg/raw/master/coords.links.user.js
 // @match        https://*.darkgalaxy.com/planets/
 // @match        https://*.darkgalaxy.com/planet/*/
-// @match        https://*.darkgalaxy.com/radar/
-// @match        https://*.darkgalaxy.com/fleets/
-// @match        https://*.darkgalaxy.com/news/
 // @grant        none
 // @todo         Must drop jquery usage (now its included in dg ui anyway)
 // ==/UserScript==
 
 (function() {
-    const pattern = /^([1-9]+)\.(\d+)\.(\d+)$/;
+    const pattern = /^([1-9]+)\.(\d+)\.(\d+).(\d+)$/;
     const navBaseUrl = '/navigation';
 
-    const makeUrl = function (xyz) {
-      const [,g,s] = pattern.exec(xyz);
+    const makeUrl = function (coords) {
+      const [,g,se,sy] = pattern.exec(coords);
       if(g != '0') {
-          return navBaseUrl + '/' + g + '/' + s + '/';
+          return navBaseUrl + '/' + g + '/' + se + '/' + sy;
       }
       return '#';
     }
-
     let items = [];
     if (location.href.match(/planet\/[0-9]+/)) {    // Single planet page
-        items = $('#planetHeader .coords, .coords > span'); // top planet coords + planet comms
-    } else { // Planets list (#planetList .coords > span), PLanet comms page (#radarList .entry .coords > span)
+        items = $('#planetHeader > .planetHeadSection > div > .coords'); // top planet coords + planet comms
+    } else { // Planets list
         items = $('.coords > span');
     }
 
