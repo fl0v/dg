@@ -6,7 +6,7 @@
 // @author       Riddick
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
-// @downloadURL  https://github.com/fl0v/dg/raw/master/planets.stats.user.js
+// @downloadURL  https://github.com/fl0v/dg/raw/master/forms.fill.high.numbers.js
 // @match        https://*.darkgalaxy.com/planet/*/production/
 // @match        https://*.darkgalaxy.com/planet/*/training/
 // @match        https://*.darkgalaxy.com/fleet/*
