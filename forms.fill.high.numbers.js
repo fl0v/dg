@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fill forms with high numbers
 // @namespace    https://darkgalaxy.com/
-// @version      0.2
+// @version      0.3
 // @description  All your planet are belong to us
 // @author       Riddick
 // @homepage     https://github.com/fl0v/dg
@@ -69,6 +69,7 @@
     }
 
     ajaxTrainRecursive = function(div, nb) {
+        document.getElementById('fillQueueBt').disabled = true;
         if (nb >= 2 && nb <= 16) {
             $.ajax({
                 type: 'POST',
@@ -111,7 +112,7 @@
     }
     let button = function(css, funct) {
         return '<div class="'+css+'" style="width:33px">'
-            + '<input type="button" value="1G" onclick="'+funct+'(event)" style="padding:2px 4px"></div>';
+            + '<input type="button" value="1G" onclick="' + funct + '(event)" style="padding:2px 4px"></div>';
     }
     // Shipyard production
     document.querySelectorAll('.prodList .nameCol')
@@ -125,25 +126,29 @@
     let trainingSubmitBtn = getInputOfType(document.getElementById('addQueue'), 'submit');
     if (trainingSubmitBtn && getInputNumber(trainingFormDiv)) {
         queuedItems = document.getElementsByClassName('queueItem').length;
-        if (window.location.hostname.startsWith('andromeda')) {
-            var defaultItemsToQueue = 6 - queuedItems;
-        } else if (window.location.hostname.startsWith('speedgame')) {
+        if (window.location.hostname.startsWith('speedgame')) {
             var defaultItemsToQueue = 10 - queuedItems;
+        } else {
+            var defaultItemsToQueue = -6 - queuedItems;
         }
         const maxItemsToQueue = defaultItemsToQueue + 6;
         let styleIncrBtn = ' style="height:17px;width:17px;float:none;vertical-align:middle;'
             + 'background-color:transparent"';
-        trainingSubmitBtn.parentNode.insertAdjacentHTML('afterend',
-            button('right', 'fillTrainingFormThenSubmit')
-            + '<div data-nb="'+defaultItemsToQueue+'" data-max="'+(defaultItemsToQueue+6)+'" '
-                    + 'class="right queueButtons" style="width: 160px">'
+        let trainMultipleBt = '';
+        if (maxItemsToQueue > 1) {
+            defaultItemsToQueue = Math.max(defaultItemsToQueue, 1);
+            trainMultipleBt = '<div class="right queueButtons" style="width: 160px" '
+                    + 'data-nb="' + defaultItemsToQueue + '" data-max="' + maxItemsToQueue + '">'
                 + '<input type="button" onclick="incrAjaxCount(event, -1)" class="queueRemoveButton"'
                     + styleIncrBtn + '">'
                 + '<input type="button" onclick="ajaxTrainMultiple(event)" '
-                    + 'value="1G, '+defaultItemsToQueue+' times" '
+                    + 'value="1G, ' + defaultItemsToQueue + ' times" id="fillQueueBt" '
                     + 'class="ajax" style="width:86px;padding:2px 4px;margin:0 4px;vertical-align:middle">'
                 + '<input type="button" onclick="incrAjaxCount(event, 1)" class="addQueue"'
-                    + styleIncrBtn + '></div>');
+                        + styleIncrBtn + '></div>';
+        }
+        trainingSubmitBtn.parentNode.insertAdjacentHTML('afterend',
+            button('right', 'fillTrainingFormThenSubmit') + trainMultipleBt);
     }
 
     // Fleet management
