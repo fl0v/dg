@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Alliance average rankings
 // @namespace    https://darkgalaxy.com/
-// @version      0.6
+// @version      0.7
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -9,66 +9,76 @@
 // @downloadURL  https://github.com/fl0v/dg/raw/master/alliance.avg.rankings.user.js
 // @match        https://*.darkgalaxy.com/rankings/alliances/
 // @grant        none
-// @todo         Must drop jquery usage (now its included in dg ui anyway)
 // ==/UserScript==
 
-(function() {
-    const rank = $('.rankingsList');
-    const items = rank.find('.entry');
-    const header = rank.find('.tableHeader');
+(function () {
+
+    const parentList = document.querySelector('.rankingsList');
+    const rows = Array.from(parentList.querySelectorAll('.entry'));
+    const header = parentList.querySelector('.tableHeader');
+    const scoreHeader = header.querySelector('.score');
+    const membersHeader = header.querySelector('.members');
 
     const getScore = (row) => {
-        let score = $(row).find('.score')[0].innerText;
-        return parseInt(score.replace(/,/g,''),10);
+        let score = row.querySelector('.score').innerText;
+        return parseInt(score.replace(/,/g, ''), 10);
     };
 
-    const getMembers = (row) => {
-        let members = $(row).find('.members')[0].innerText;
-        return parseInt(members, 10);
+    const getMembersCount = (row) => {
+        let count = row.querySelector('.members').innerText;
+        return parseInt(count, 10);
     };
 
     // Add average
-    items.each(function() {
-        const score = getScore(this);
-        const members = getMembers(this);
+    rows.forEach((row) => {
+        const score = getScore(row);
+        const members = getMembersCount(row);
         const avg = score > 0 ? (score / members).toFixed(2) : null;
-        $(this).append('<div class="left avg">'+avg+'</div>').data('avg',avg);
+
+        // store data to use it for sorting
+        row.dataset.score = score;
+        row.dataset.average = avg;
+        row.dataset.members = members;
+
+        // add value in row
+        const scoreEl = row.querySelector('.score');
+        scoreEl.classList.toggle('right', false);
+        scoreEl.classList.toggle('left', true);
+        scoreEl.insertAdjacentHTML('afterend', `<div class="left average">${avg}</div>`);
     });
 
-    // Sorting by avg
-    header.append('<div class="left title avg"><a href="#">Avg</a></div>');
-    header.on('click','.avg', function (event) {
-        items.detach().sort(function (a, b) {
-            const ascore = parseInt($(a).data('avg'));
-            const bscore = parseInt($(b).data('avg'));
-            return( ascore < bscore ? 1 : ( ascore > bscore ? -1 : 0 ) );
-        });
+    // Add 'Average' header
+    header.insertAdjacentHTML('beforeend', `<div class="title average"><a href="#">Avg</a></div>`);
+    // Add other sort links
+    scoreHeader.innerHTML = '<a href="#">Score</a>';
+    membersHeader.innerHTML = '<a href="#">Members</a>';
 
-        // Update ranks
-        items.each(function(idx) {
-            $(this).find('.rank').html(idx+1);
-        });
-
-        // Save new list
-        rank.append(items);
+    // Sorting
+    header.addEventListener('click', (event) => {
+        event.preventDefault();
+        const clicked = event.target.closest('.title');
+        if (clicked.classList.contains('average')) {
+            rows.sort((a, b) => b.dataset.average - a.dataset.average);
+        } else if (clicked.classList.contains('members')) {
+            rows.sort((a, b) => b.dataset.members - a.dataset.members);
+        } else {
+            rows.sort((a, b) => b.dataset.score - a.dataset.score);
+        }
+        rows.forEach((row, idx) => row.querySelector('.rank').innerText = idx + 1); // update rank
+        parentList.replaceChildren(header, ...rows);
+        return false;
     });
 
-    // Sorting by score
-    header.find('.score').replaceWith('<div class="right title score"><a href="#">Score</a></div>');
-    header.on('click','.score',function (event) {
-        items.detach().sort(function (a, b) {
-            const ascore = getScore(a);
-            const bscore = getScore(b);
-            return( ascore < bscore ? 1 : ( ascore > bscore ? -1 : 0 ) );
-        });
-
-        // Update ranks
-        items.each(function(idx) {
-            $(this).find('.rank').html(idx+1);
-        });
-
-        // Save new list
-        rank.append(items);
-    });
+    /**
+     * Custom css
+     */
+    const style = document.createElement("style");
+    style.innerHTML = `
+        .rankingsList .name { width: 450px; }
+        .rankingsList .members { width: 80px; text-align:right; }
+        .rankingsList .score { width: 80px; text-align:right; }
+        .rankingsList .average { width: 80px; text-align:right; }
+    `;
+    document.getElementsByTagName("head")[0].appendChild(style);
 
 })();
