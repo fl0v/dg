@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Global radar page enhancement
 // @namespace    https://darkgalaxy.com/
-// @version      0.12
+// @version      0.13
 // @description  My God Its Full Of Stars!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -92,11 +92,13 @@
     if (container) {
         container.classList.add("relative-container");
         container.insertAdjacentHTML('afterbegin',`
+            <div class="radar-companion-container">
             <div class="lightBorder opacDarkBackground radar-companion">
                 <div class="links-container">
                     ${tplPlanets}
                     <span class="top"><a href="#">Top</a></span>
                 </div>
+            </div>
             </div>
         `);
     }
@@ -229,10 +231,10 @@
      * Custom css
      */
     const style = document.createElement('style');
-    style.type = 'text/css';
     style.innerHTML = `
         .d-flex { display:flex; }
-        .radar-companion { width:50px; padding:5px; position:fixed; top:190px; right:0; z-index:9999; overflow:hidden; }
+        .radar-companion-container { position:fixed; top:190px; width:900px; left:50%; transform: translateX(-50%); }
+        .radar-companion { width:50px; padding:5px; position:absolute; top:0; right:-100px; z-index:9999; overflow:hidden; }
         .radar-companion .links-container { display:flex;flex-direction:column;  }
         .radar-companion .planet { display:block; margin:2px; font-size:14px; white-space: nowrap; }
         .radar-companion .top { display:block; margin:15px 2px 5px 2px; font-size:12px; text-align:left;}
