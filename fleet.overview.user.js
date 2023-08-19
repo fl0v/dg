@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleet overview
 // @namespace    https://darkgalaxy.com/
-// @version      0.4
+// @version      0.5
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
 // @supportURL   https://github.com/fl0v/dg/issues
@@ -42,24 +42,24 @@
         'Worker': 0.001,
     };
 
-    const scoreTemplate = (unitScore,label) => `<span class="score neutral right">(<em>${formatNumber(unitScore.toFixed(2))}</em> ${label})</span>`
+    const scoreTemplate = (unitScore, label) => `<span class="score neutral right">(<em>${formatNumber(unitScore.toFixed(2))}</em> ${label})</span>`
 
 
     const [totalScore, wfScore] = Array.from(document.querySelectorAll('#contentBox .fleetRight .entry'))
         .reduce((carry, item) => {
-            console.log('item',item.innerText);
+            console.log('item', item.innerText);
             if (shipPattern.test(item.innerText)) {
-                const [,cnt,name] = item.innerText.match(shipPattern);
+                const [, cnt, name] = item.innerText.match(shipPattern);
                 const ss = parseValue(cnt) * (score[name] ? score[name] : 0);
-                console.log('cnt',cnt,'name',name,ss);
+                console.log('cnt', cnt, 'name', name, ss);
                 carry[0] += ss;
                 if (realShips.includes(name)) {
                     carry[1] += ss;
                 }
-                item.querySelector('div:last-child').insertAdjacentHTML('beforeend',scoreTemplate(ss,'score'));
+                item.querySelector('div:last-child').insertAdjacentHTML('beforeend', scoreTemplate(ss, 'score'));
             }
             return carry;
-    },[0,0]);
+        }, [0, 0]);
     document.querySelector('#contentBox .fleetRight .header')
         .insertAdjacentHTML('beforeend', scoreTemplate(totalScore, 'total') + ' ' + scoreTemplate(wfScore, 'wf'));
 

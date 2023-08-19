@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fill forms with high numbers
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @description  All your planet are belong to us
 // @author       Riddick
 // @homepage     https://github.com/fl0v/dg
@@ -15,14 +15,14 @@
 
 (function () {
 
-    getInputNumber = function(element) {
+    getInputNumber = function (element) {
         return getInputOfType(element, 'number');
     }
 
-    getInputOfType = function(element, type) {
+    getInputOfType = function (element, type) {
         if (element) {
             inputs = element.getElementsByTagName('input');
-            for (let i=0; i<inputs.length; i++) {
+            for (let i = 0; i < inputs.length; i++) {
                 if (inputs[i].type.toLowerCase() == type) {
                     return inputs[i];
                 }
@@ -31,51 +31,51 @@
         return null;
     }
 
-    onCheck = function(event) {
+    onCheck = function (event) {
         fillTextForm(event.target.parentNode.parentNode, !event.target.checked);
     }
 
-    fillTextForm = function(lineDiv, clear) {
+    fillTextForm = function (lineDiv, clear) {
         let input = getInputNumber(lineDiv);
         if (input) {
             input.value = clear ? '' : 999999999;
         }
     }
 
-    submitForm = function() {
+    submitForm = function () {
         HTMLFormElement.prototype.submit.call(document.getElementById('addQueue'));
     }
 
-    fillTextFormThenSubmit = function(event) {
+    fillTextFormThenSubmit = function (event) {
         fillTextForm(event.target.parentNode.parentNode);
         submitForm();
     }
 
-    getTrainingFormDiv = function(doc) {
+    getTrainingFormDiv = function (doc) {
         return (doc ? doc : document).querySelector('form#addQueue .trainList.availableItem.entry');
     }
 
-    fillTrainingFormThenSubmit = function(event) {
+    fillTrainingFormThenSubmit = function (event) {
         fillTextForm(getTrainingFormDiv());
         submitForm();
     }
 
     const parser = new DOMParser();
-    ajaxTrainMultiple = function(event) {
+    ajaxTrainMultiple = function (event) {
         fillTextForm(getTrainingFormDiv());
         let div = event.target.parentNode;
         let nb = parseInt(div.dataset.nb);
         ajaxTrainRecursive(div, nb);
     }
 
-    ajaxTrainRecursive = function(div, nb) {
+    ajaxTrainRecursive = function (div, nb) {
         document.getElementById('fillQueueBt').disabled = true;
         if (nb >= 2 && nb <= 16) {
             $.ajax({
                 type: 'POST',
                 url: $("form#addQueue").attr("action"),
                 data: $("form").serialize(),
-                success: function(response) {
+                success: function (response) {
                     nb--;
                     updateAjaxButton(div, nb);
                     if (getInputNumber(getTrainingFormDiv(parser.parseFromString(response, "text/html")))) {
@@ -84,7 +84,7 @@
                         submitForm();
                     }
                 },
-                error: function() {
+                error: function () {
                     submitForm();
                 }
             });
@@ -93,7 +93,7 @@
         }
     }
 
-    incrAjaxCount = function(event, incr) {
+    incrAjaxCount = function (event, incr) {
         let div = event.target.parentNode;
         let newNb = parseInt(div.dataset.nb) + parseInt(incr);
         if (newNb >= 1 && newNb <= parseInt(div.dataset.max)) {
@@ -101,17 +101,17 @@
         }
     }
 
-    updateAjaxButton = function(div, nb) {
+    updateAjaxButton = function (div, nb) {
         div.dataset.nb = nb;
         div.getElementsByClassName('ajax')[0].value = '1G, ' + div.dataset.nb + ' times';
     }
 
-    let checkbox = function(css) {
-        return '<div class="'+css+'" style="width:22px">'
+    let checkbox = function (css) {
+        return '<div class="' + css + '" style="width:22px">'
             + '<input type="checkbox" onchange="onCheck(event)"></div>';
     }
-    let button = function(css, funct) {
-        return '<div class="'+css+'" style="width:33px">'
+    let button = function (css, funct) {
+        return '<div class="' + css + '" style="width:33px">'
             + '<input type="button" value="1G" onclick="' + funct + '(event)" style="padding:2px 4px"></div>';
     }
     // Shipyard production
@@ -138,21 +138,21 @@
         if (maxItemsToQueue > 1) {
             defaultItemsToQueue = Math.max(defaultItemsToQueue, 1);
             trainMultipleBt = '<div class="right queueButtons" style="width: 160px" '
-                    + 'data-nb="' + defaultItemsToQueue + '" data-max="' + maxItemsToQueue + '">'
+                + 'data-nb="' + defaultItemsToQueue + '" data-max="' + maxItemsToQueue + '">'
                 + '<input type="button" onclick="incrAjaxCount(event, -1)" class="queueRemoveButton"'
-                    + styleIncrBtn + '">'
+                + styleIncrBtn + '">'
                 + '<input type="button" onclick="ajaxTrainMultiple(event)" '
-                    + 'value="1G, ' + defaultItemsToQueue + ' times" id="fillQueueBt" '
-                    + 'class="ajax" style="width:86px;padding:2px 4px;margin:0 4px;vertical-align:middle">'
+                + 'value="1G, ' + defaultItemsToQueue + ' times" id="fillQueueBt" '
+                + 'class="ajax" style="width:86px;padding:2px 4px;margin:0 4px;vertical-align:middle">'
                 + '<input type="button" onclick="incrAjaxCount(event, 1)" class="addQueue"'
-                        + styleIncrBtn + '></div>';
+                + styleIncrBtn + '></div>';
         }
         trainingSubmitBtn.parentNode.insertAdjacentHTML('afterend',
             button('right', 'fillTrainingFormThenSubmit') + trainMultipleBt);
     }
 
     // Fleet management
-    let addHeader  = function(row) {
+    let addHeader = function (row) {
         let table = row.parentNode;
         if (!table.dataset.isColumnAdded) {
             table.dataset.isColumnAdded = true;
@@ -161,7 +161,7 @@
                 let colHeads = colHeadList[0].children;
                 if (colHeads.length >= 2) {
                     let lastCol = colHeads[colHeads.length - 1];
-                    lastCol.style='width:150px';
+                    lastCol.style = 'width:150px';
                     lastCol.insertAdjacentHTML('afterend',
                         '<div class="title" style="width:36px;text-align:right">1G</div>');
                 }
