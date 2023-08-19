@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Fleet scan
 // @namespace    https://darkgalaxy.com/
-// @version      0.9
+// @version      0.10
 // @description  The enemy is at the gates!
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -12,7 +12,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
 
     /*
      * @todo simulate combat action
@@ -77,25 +77,25 @@
         }
 
         // GLOBAL ALLIANCE
-        fleets.alliances[allianceId] = fleets.alliances[allianceId] || {name:allianceName,allied:allied,fleet:{},cnt:0}; // init alliance
+        fleets.alliances[allianceId] = fleets.alliances[allianceId] || { name: allianceName, allied: allied, fleet: {}, cnt: 0 }; // init alliance
         fleets.alliances[allianceId].fleet[shName] = fleets.alliances[allianceId].fleet[shName] || 0; // init ship type
         fleets.alliances[allianceId].fleet[shName] += flCount;
         fleets.alliances[allianceId].cnt += flCount;
 
         // FOR EACH ETA
-        fleets.eta[eta] = fleets.eta[eta] || { owned : {name:'',cnt:0,fleet:{}}, alliances: {}}; // init eta
+        fleets.eta[eta] = fleets.eta[eta] || { owned: { name: '', cnt: 0, fleet: {} }, alliances: {} }; // init eta
         if (owned) {
             fleets.eta[eta].owned.name = playerName;
             fleets.eta[eta].owned.fleet[shName] = fleets.eta[eta].owned.fleet[shName] || 0; // init ruller
             fleets.eta[eta].owned.fleet[shName] += flCount;
             fleets.eta[eta].owned.cnt += flCount;
         }
-        fleets.eta[eta].alliances[allianceId] = fleets.eta[eta].alliances[allianceId] || {name:allianceName,allied:allied,fleet:{},cnt:0}; // init eta alliance
+        fleets.eta[eta].alliances[allianceId] = fleets.eta[eta].alliances[allianceId] || { name: allianceName, allied: allied, fleet: {}, cnt: 0 }; // init eta alliance
         fleets.eta[eta].alliances[allianceId].fleet[shName] = fleets.eta[eta].alliances[allianceId].fleet[shName] || 0; // init ship type
         fleets.eta[eta].alliances[allianceId].fleet[shName] += flCount;
         fleets.eta[eta].alliances[allianceId].cnt += flCount;
 
-        if (! shipsInScan.includes(shName)) {
+        if (!shipsInScan.includes(shName)) {
             shipsInScan.push(shName);
         }
     }
@@ -137,12 +137,12 @@
      */
     let allianceOrder = [];
     Object.entries(fleets.alliances).forEach((a) => {
-        if (a[1].allied && ! allianceOrder.includes(a[0])) {
+        if (a[1].allied && !allianceOrder.includes(a[0])) {
             allianceOrder.push(a[0]);
         }
     });
     Object.entries(fleets.alliances).forEach((a) => {
-        if (! a[1].allied && ! allianceOrder.includes(a[0])) {
+        if (!a[1].allied && !allianceOrder.includes(a[0])) {
             allianceOrder.push(a[0]);
         }
     });
@@ -178,7 +178,7 @@
             } else {
                 return carry;
             }
-        },'');
+        }, '');
 
 
         /*
@@ -188,10 +188,10 @@
         let score = 0;
         tplBody += Object.entries(fleet).reduce((carry, a) => {
             score += (shipScore[a[0]] || 0) * a[1];
-            return ! shipsOrder.includes(a[0])
-                ? carry + shipTemplate(a[0],a[1])
+            return !shipsOrder.includes(a[0])
+                ? carry + shipTemplate(a[0], a[1])
                 : carry;
-        },'');
+        }, '');
         return `
             <div class="lightBorder column">
                 ${tplHeader}
@@ -209,16 +209,16 @@
     const scanRowTemplate = (title, rowFleets) => {
         let tplRow = '';
         if (rowFleets.owned.cnt > 0) {
-            tplRow += allianceTemplate('friendly',rowFleets.owned.name,rowFleets.owned.fleet);
+            tplRow += allianceTemplate('friendly', rowFleets.owned.name, rowFleets.owned.fleet);
         } else if (forceOwned) {
             tplRow += '<div class="column"></div>'; // just spacer to keep the column for owned fleets
         }
         allianceOrder.forEach((id) => {
             let a = rowFleets.alliances[id];
             tplRow += a
-                ? allianceTemplate(a.allied ? 'allied' : 'hostile',a.name,a.fleet)
+                ? allianceTemplate(a.allied ? 'allied' : 'hostile', a.name, a.fleet)
                 : '<div class="column"></div>' // if an alliance dose not have fleets at current eta then we put in a spacer
-            ;
+                ;
         });
         return `
             <div class="header border">${title}</div>
@@ -234,10 +234,10 @@
          * i think all fleets are always in cronological order in fleetscan
          */
         const tplEta = Object.entries(fleets.eta).reduce((carry, a) => {
-            const title = a[0] == 0 ? 'Fleets on orbit' : 'ETA '+a[0];
-            return carry += scanRowTemplate(title,a[1]);
-        },'');
-        document.querySelector('#planetHeader').insertAdjacentHTML('afterend',`
+            const title = a[0] == 0 ? 'Fleets on orbit' : 'ETA ' + a[0];
+            return carry += scanRowTemplate(title, a[1]);
+        }, '');
+        document.querySelector('#planetHeader').insertAdjacentHTML('afterend', `
             <div class="lightBorder ofHidden opacDarkBackground fleetscanTotals">
                 ${scanRowTemplate('Fleet Scan Total', fleets)}
                 ${tplEta}

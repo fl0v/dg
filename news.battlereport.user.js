@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Battle report analyzer
 // @namespace    https://darkgalaxy.com/
-// @version      0.5
+// @version      0.6
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -152,8 +152,8 @@
                         <td class="opacBackground text-left">Total (Yours + Allied)</td>
                         <td class="opacBackground" colspan="2">
                             ${formatNumber(
-                              lost.owned.metal + lost.owned.mineral + lost.allied.metal + lost.allied.mineral,
-                            )}
+        lost.owned.metal + lost.owned.mineral + lost.allied.metal + lost.allied.mineral,
+      )}
                         </td>
                         <td class="opacBackground">
                             ${formatNumber(lost.hostile.metal + lost.hostile.mineral)}

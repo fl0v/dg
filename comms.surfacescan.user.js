@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dark Galaxy - Surface scan
 // @namespace    https://darkgalaxy.com/
-// @version      0.3
+// @version      0.4
 // @description  All your planet are belong to us
 // @author       Biggy
 // @homepage     https://github.com/fl0v/dg
@@ -95,7 +95,7 @@
                 planetInfo.soldiers = parseValue(soldiers);
             }
         });
-        planetInfo.soldiersRequired = requiredSoldiers(planetInfo.workersTotal,planetInfo.soldiers);
+        planetInfo.soldiersRequired = requiredSoldiers(planetInfo.workersTotal, planetInfo.soldiers);
 
         /**
          * Identify houseing capacity and JG, HB, AB
@@ -103,11 +103,11 @@
         planetInfo.summary = Array.from(container.parentNode.querySelectorAll('.entry')).reduce((carry, el) => {
             const txt = el.innerText;
             const matched = important.reduce((matched, pattern) => {
-                if (! matched && pattern.test(txt)) {
+                if (!matched && pattern.test(txt)) {
                     matched = true;
                 }
                 return matched;
-            },false);
+            }, false);
             if (matched) {
                 carry.push(txt);
             }
@@ -115,21 +115,21 @@
             housing.reduce((m, b) => {
                 if (!m && b.pattern.test(txt)) {
                     m = true;
-                    const [,cnt] = txt.match(b.pattern);
+                    const [, cnt] = txt.match(b.pattern);
                     planetInfo.housing += (cnt * b.housing);
                 }
                 return m;
             }, false);
 
             return carry;
-        },[]);
+        }, []);
 
         /**
          * Add info only if we have parsed workers or soldiers, otherwise is anot a surface scan
          */
         if (planetInfo.workersTotal > 0 || planetInfo.soldiers > 0) {
             addInvasionInfo(container, planetInfo);
-            header.insertAdjacentHTML('beforeend',`
+            header.insertAdjacentHTML('beforeend', `
                 <div class="right scan-summary">
                     Importat: <b>${planetInfo.summary.join(', ')}</b>
                 </div>
