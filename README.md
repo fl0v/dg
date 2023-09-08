@@ -1,3 +1,5 @@
+Replaced by https://github.com/fl0v/dg-companion (chrome extension)
+
 # Dark Galaxy Tools
 
 ## Installation
